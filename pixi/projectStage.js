@@ -389,7 +389,7 @@ let helloCardSprite = createWelcomeSprite(
 //Project view helper code
 
 //project view scaling
-let scale = {
+export let scale = {
 	project: 0.5,
 	desk: 1,
 	book: 1,
@@ -424,7 +424,7 @@ if (appWidth < 400) {
 }
 
 //function to create project sprites
-function createSprite(x, y, texture, type) {
+export function createSprite(x, y, texture, type) {
 	const sprite = new Sprite(texture);
 	app.stage.addChild(sprite);
 	sprite.anchor.set(0.5);
@@ -787,36 +787,36 @@ let secondMonstera = createSprite(
 	monstera,
 	'decor'
 );
-let radioText = PIXI.Texture.from('/siteAssets/radio.png');
-let radio = createSprite(
-	(appWidth / 2) * 7.4,
-	(appHeight / 4) * 2.4 + 10 * scale.radio,
-	radioText,
-	'radio'
-);
+// let radioText = PIXI.Texture.from('/siteAssets/radio.png');
+// let radio = createSprite(
+// 	(appWidth / 2) * 7.4,
+// 	(appHeight / 4) * 2.4 + 10 * scale.radio,
+// 	radioText,
+// 	'radio'
+// );
 
 // https://open.spotify.com/playlist/4pIW1SD0OMJOYqp30KjvGI?si=IZHmW7wFSu-DaMmBF1NtHQ
-radio.on('mouseover', () => (radio.tint = 0x007ec7));
-radio.on('mouseout', () => (radio.tint = 0xffffff));
+// radio.on('mouseover', () => (radio.tint = 0x007ec7));
+// radio.on('mouseout', () => (radio.tint = 0xffffff));
 
-//simply links to a spotify playlist
-radio.on('click', () => {
-	window.open(
-		'https://open.spotify.com/playlist/4pIW1SD0OMJOYqp30KjvGI?si=IZHmW7wFSu-DaMmBF1NtHQ',
-		'_blank'
-	);
-	app.stage.pivot.x = 3 * appWidth;
-});
-radio.on('tap', () => {
-	window.open(
-		'https://open.spotify.com/playlist/4pIW1SD0OMJOYqp30KjvGI?si=IZHmW7wFSu-DaMmBF1NtHQ',
-		'_blank'
-	);
-	app.stage.pivot.x = 3 * appWidth;
-});
+// //simply links to a spotify playlist
+// radio.on('click', () => {
+// 	window.open(
+// 		'https://open.spotify.com/playlist/4pIW1SD0OMJOYqp30KjvGI?si=IZHmW7wFSu-DaMmBF1NtHQ',
+// 		'_blank'
+// 	);
+// 	app.stage.pivot.x = 3 * appWidth;
+// });
+// radio.on('tap', () => {
+// 	window.open(
+// 		'https://open.spotify.com/playlist/4pIW1SD0OMJOYqp30KjvGI?si=IZHmW7wFSu-DaMmBF1NtHQ',
+// 		'_blank'
+// 	);
+// 	app.stage.pivot.x = 3 * appWidth;
+// });
 
 //trying to conditionally render spotify playlist
-// export let visible = false;
+//export let visible = false;
 // radio.on('click', () => {
 // 	visible = true;
 // 	console.log('hi');

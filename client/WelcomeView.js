@@ -18,7 +18,7 @@ export default class Welcome extends React.Component {
 			//florida data
 			weatherColor: 0,
 			//for testing- change to Manhattan
-			city: 'Miami',
+			city: 'Phoenix',
 			lat: 27.66,
 			lng: -81.51,
 			data: {},
@@ -41,6 +41,7 @@ export default class Welcome extends React.Component {
 			);
 			const data = await api_call.json();
 			this.setState({ data });
+			console.log('weather: ', this.state.data);
 			this.chooseWeatherColor(
 				this.calculateTemp(this.state.data.main.temp),
 				this.state.data.weather[0].description,
@@ -123,6 +124,7 @@ export default class Welcome extends React.Component {
 	}
 
 	async findMe() {
+		console.log('findMe!');
 		let newLat, newLong;
 		try {
 			navigator.geolocation.getCurrentPosition(async (position) => {
@@ -133,6 +135,7 @@ export default class Welcome extends React.Component {
 				);
 				const data = await api_call.json();
 				this.setState({ data });
+				console.log('weather: ', this.state.data);
 				this.chooseWeatherColor(
 					this.calculateTemp(this.state.data.main.temp),
 					this.state.data.weather[0].description,
@@ -149,6 +152,7 @@ export default class Welcome extends React.Component {
 	//just to change color of windows
 	componentDidUpdate(prevState) {
 		//creating window colors
+		console.log('updated!');
 		if (prevState.weatherColor !== this.state.weatherColor) {
 			weatherWindow = new PIXI.Graphics();
 			//available if needed for addt'l responsive design / scaling
@@ -232,40 +236,57 @@ export default class Welcome extends React.Component {
 	//choose weather color on time and weather
 	chooseWeatherColor(temp, clouds, time) {
 		let r, g, b;
-		let light = false;
+
 		// deal with clouds
 		let cloudy = false;
+		let broken = false;
+		let few = false;
 		if (clouds.includes('cloud') || clouds.includes('Cloud')) {
 			cloudy = true;
 		}
+		if (clouds.includes('broken')) {
+			broken = true;
+		}
+		if (clouds.includes('few')) {
+			few = true;
+		}
+
 		//get current time of day
 		let dayTime = time.getHours() === 0 ? 24 : time.getHours();
-		if (6 < dayTime < 16) {
-			light = true;
+
+		//deal with light
+		if (6 <= dayTime && dayTime <= 16) {
+			//blue should be higher when lighter
+			b = Math.floor((1 - dayTime / 36) * 255);
 		} else {
-			light = false;
+			b = Math.floor((1 - dayTime / 48) * 60);
 		}
-		r = Math.floor(((temp / 100) * 255) / 7);
-		//blue should be higher when lighter
-		if (light) {
-			b = Math.floor((1 - dayTime / 24) * 255);
-		} else {
-			b = Math.floor((1 - dayTime / 48) * 255);
-		}
-		//if there are clouds, rgh should be very close together for grey effect
-		if (cloudy) {
-			g = Math.floor(b * 0.95);
-			r = Math.floor(g * 0.95);
+
+		//make red dependent on temp to show heat
+		r = Math.floor(((temp / 100) * 255) / 9);
+
+		//if there are clouds, rgb should be very close together for grey effect
+		if (cloudy && broken) {
+			g = Math.floor(b * 0.65);
+			r = Math.floor(g * 0.55);
+		} else if (cloudy && few) {
+			g = Math.floor(b * 0.5);
+			r = Math.floor(b * 0.3);
+		} else if (cloudy) {
+			g = Math.floor(b * 0.8);
+			r = Math.floor(g * 0.75);
 		} else {
 			//green should generally be half of blue for a blue sky
-			g = Math.floor(b / 2);
+			g = Math.floor(b * 0.75);
 		}
+
 		//translate rbg elements into hex
 		r = this.componentToHex(r);
 		g = this.componentToHex(g);
 		b = this.componentToHex(b);
 		//translate rgb string to hex
 		let rgbHex = this.rgbToHex(r, g, b);
+		console.log('rgb: ', rgbHex);
 		//set weather on state
 		this.setState({ weatherColor: rgbHex });
 	}

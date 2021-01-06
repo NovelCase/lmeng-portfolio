@@ -8,16 +8,17 @@
 body {
 }
 #app {
-	/* max-width: 20%;
-	padding: 1rem 3rem;
-	margin: 2rem;
+	max-width: 30%;
+	/* padding: 0.2rem 0.2rem;
+	margin: 1.5rem; */
 	border: solid 5px var(--main-bg-color);
 	outline-offset: 1rem;
-	outline: 1rem solid #363636; */
+	outline: 1rem solid #363636;
 }
 #pixi {
 }
 
 #outerContainer {
 	display: flex;
+	flex-direction: row;
 }
