@@ -8,13 +8,12 @@
 body {
 }
 #app {
-	max-width: 20%;
+	/* max-width: 20%;
 	padding: 1rem 3rem;
 	margin: 2rem;
 	border: solid 5px var(--main-bg-color);
 	outline-offset: 1rem;
-	/* outline: 3px solid var(--main-bg-color); */
-	outline: 1rem solid #363636;
+	outline: 1rem solid #363636; */
 }
 #pixi {
 }
