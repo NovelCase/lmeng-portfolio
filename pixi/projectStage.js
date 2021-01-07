@@ -202,6 +202,9 @@ app.stage.addChild(floor);
 export let windowWeather = new PIXI.Container();
 app.stage.addChild(windowWeather);
 
+export let transparentScreen = new PIXI.Container();
+app.stage.addChild(transparentScreen);
+
 //welcome view helper code
 
 //welcome view scaling with set height and width for windows

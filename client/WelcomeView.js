@@ -18,7 +18,7 @@ export default class Welcome extends React.Component {
 			//florida data
 			weatherColor: 0,
 			//for testing- change to Manhattan
-			city: 'Phoenix',
+			city: 'Miami',
 			lat: 27.66,
 			lng: -81.51,
 			data: {},
