@@ -2,9 +2,7 @@ const { Sprite } = require('pixi.js');
 const PIXI = require('pixi.js');
 const Project = require('../client/ProjectView');
 var _ = require('lodash');
-// ? for iframe?
 import React from 'react';
-import { weatherWindow } from '../client/WelcomeView';
 
 window.WebFontConfig = {
 	google: {
@@ -22,7 +20,8 @@ window.WebFontConfig = {
 	s.parentNode.insertBefore(wf, s);
 })();
 
-const app = new PIXI.Application({
+
+export const app = new PIXI.Application({
 	transparent: false,
 	resizeTo: window,
 });
@@ -119,6 +118,8 @@ function keyboard(value) {
 
 	return key;
 }
+
+
 //welcome view helper code
 
 //welcome view scaling with set height and width for windows
@@ -132,6 +133,7 @@ let welcomeScale = {
 	monstera: 0.8,
 	maranta: 0.5,
 	card: 0.85,
+	findMe: 0.65,
 };
 if (appWidth < 400) {
 	welcomeScale.windows = 0.4;
@@ -145,6 +147,7 @@ if (appWidth < 400) {
 	leftWindowHeight = 330;
 } else if (appWidth < 500) {
 	welcomeScale.windows = 0.455;
+	welcomeScale.findMeDiv = 0.455;
 	welcomeScale.card = 0.595;
 	welcomeScale.snake1 = 0.56;
 	welcomeScale.snake2 = 0.56;
@@ -380,7 +383,8 @@ let helloCardSprite = createWelcomeSprite(
 //Project view helper code
 
 //project view scaling
-let scale = {
+
+export let scale = {
 	project: 0.5,
 	desk: 1,
 	book: 1,
@@ -415,7 +419,7 @@ if (appWidth < 400) {
 }
 
 //function to create project sprites
-function createSprite(x, y, texture, type) {
+export function createSprite(x, y, texture, type) {
 	const sprite = new Sprite(texture);
 	app.stage.addChild(sprite);
 	sprite.anchor.set(0.5);
@@ -778,41 +782,7 @@ let secondMonstera = createSprite(
 	monstera,
 	'decor'
 );
-let radioText = PIXI.Texture.from('/siteAssets/radio.png');
-let radio = createSprite(
-	(appWidth / 2) * 7.5,
-	(appHeight / 4) * 2.4 + 10 * scale.radio,
-	radioText,
-	'radio'
-);
 
-// https://open.spotify.com/playlist/4pIW1SD0OMJOYqp30KjvGI?si=IZHmW7wFSu-DaMmBF1NtHQ
-radio.on('mouseover', () => (radio.tint = 0x007ec7));
-radio.on('mouseout', () => (radio.tint = 0xffffff));
-
-//simply links to a spotify playlist
-radio.on('click', () => {
-	window.open(
-		'https://open.spotify.com/playlist/4pIW1SD0OMJOYqp30KjvGI?si=IZHmW7wFSu-DaMmBF1NtHQ',
-		'_blank'
-	);
-	app.stage.pivot.x = 3 * appWidth;
-});
-radio.on('tap', () => {
-	window.open(
-		'https://open.spotify.com/playlist/4pIW1SD0OMJOYqp30KjvGI?si=IZHmW7wFSu-DaMmBF1NtHQ',
-		'_blank'
-	);
-	app.stage.pivot.x = 3 * appWidth;
-});
-
-//trying to conditionally render spotify playlist
-// export let visible = false;
-// radio.on('click', () => {
-// 	visible = true;
-// 	console.log('hi');
-// });
-// radio.on('tap', () => (visible = true));
 
 /* table with guest book */
 
@@ -834,7 +804,7 @@ guestbook.on('mouseover', () => (guestbook.tint = 0x007ec7));
 guestbook.on('mouseout', () => (guestbook.tint = 0xffffff));
 guestbook.on('click', () => {
 	window.location.href =
-		'mailto:m.leslie.meng@gmail.com?subject=Just visited your  website!';
+		'mailto:m.leslie.meng@gmail.com?subject=Just visited your website!';
 	app.stage.pivot.x = 3 * appWidth;
 });
 guestbook.on('tap', () => {
@@ -852,6 +822,9 @@ app.stage.addChild(text);
 
 export let spotifyPixi = new PIXI.Container();
 app.stage.addChild(spotifyPixi);
+
+export let findMeDiv = new PIXI.Container();
+app.stage.addChild(findMeDiv);
 
 export {
 	backWindowHeight,

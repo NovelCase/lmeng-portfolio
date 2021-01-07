@@ -5,6 +5,7 @@ import '../public/style.css';
 import Project from './ProjectView';
 import Welcome from './WelcomeView';
 import Contact from './ContactView';
+import * as PixiApp from '../pixi/projectStage.js';
 require('babel-core/register');
 require('babel-polyfill');
 
@@ -12,7 +13,7 @@ ReactDOM.render(
 	<div>
 		<Project />
 		<Welcome />
-		{/* <Contact /> */}
+		<Contact />
 	</div>,
 	document.getElementById('app')
 );
