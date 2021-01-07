@@ -4,8 +4,6 @@ import * as PIXI from 'pixi.js';
 
 let width = PixiApp.appWidth;
 let height = PixiApp.appHeight;
-let transparent;
-//let visible = PixiApp.visible;
 
 export default class Contact extends React.Component {
 	constructor() {
@@ -36,8 +34,10 @@ export default class Contact extends React.Component {
 		if (this.state.visible) {
 			this.setState({ visible: false });
 			PixiApp.app.stage.pivot.x = width * 3;
+			PixiApp.app.renderer.view.width += width / 4;
 		} else {
 			this.setState({ visible: true });
+			PixiApp.app.renderer.view.width -= width / 4;
 		}
 	}
 
