@@ -20,6 +20,7 @@ window.WebFontConfig = {
 	s.parentNode.insertBefore(wf, s);
 })();
 
+
 export const app = new PIXI.Application({
 	transparent: false,
 	resizeTo: window,
@@ -118,28 +119,69 @@ function keyboard(value) {
 	return key;
 }
 
+
+//welcome view helper code
+
+//welcome view scaling with set height and width for windows
+let backWindowWidth = 600;
+let backWindowHeight = 300;
+let leftWindowHeight = 480;
+let welcomeScale = {
+	windows: 0.65,
+	snake1: 0.8,
+	snake2: 0.8,
+	monstera: 0.8,
+	maranta: 0.5,
+	card: 0.85,
+	findMe: 0.65,
+};
+if (appWidth < 400) {
+	welcomeScale.windows = 0.4;
+	welcomeScale.card = 0.45;
+	welcomeScale.snake1 = 0.425;
+	welcomeScale.snake2 = 0.425;
+	welcomeScale.monstera = 0.425;
+	welcomeScale.maranta = 0.3;
+	backWindowWidth = 270;
+	backWindowHeight = 210;
+	leftWindowHeight = 330;
+} else if (appWidth < 500) {
+	welcomeScale.windows = 0.455;
+	welcomeScale.findMeDiv = 0.455;
+	welcomeScale.card = 0.595;
+	welcomeScale.snake1 = 0.56;
+	welcomeScale.snake2 = 0.56;
+	welcomeScale.monstera = 0.56;
+	welcomeScale.maranta = 0.35;
+	backWindowWidth = 270;
+	backWindowHeight = 210;
+	leftWindowHeight = 330;
+}
 /****** Background *******/
 
 let ceiling = new PIXI.Graphics();
 ceiling
 	.beginFill(0xf4f5e7)
-	.drawRect(0, 0, appWidth * 4, appHeight / 2.75)
+	.drawRect(0, 0, appWidth * 4, appHeight / 2)
 	.endFill();
-app.stage.addChild(ceiling);
+if (appHeight > 560) app.stage.addChild(ceiling);
 
 export let trim = new PIXI.Graphics();
 trim
 	.beginFill(0xb39b5f)
 	.drawPolygon([
 		//top left corner
-		appWidth / 6,
+		appWidth / 8,
 		appHeight / 12,
 		//bottom left
 		0,
-		appHeight / 2.75,
+		(appHeight * 1) / 12 +
+			Math.max(appWidth / 7.66, appWidth / 8 - 100 * welcomeScale.windows),
 		//capture weird triangle
 		0,
-		appHeight / 2.75 + appHeight / 24,
+		(appHeight * 3) / 24 +
+			Math.max(appWidth / 8, appWidth / 8 - 100 * welcomeScale.windows) +
+			appHeight / 24,
 		//bottom right
 		appWidth * 4,
 		appHeight / 3,
@@ -148,21 +190,22 @@ trim
 		appHeight / 12,
 	])
 	.endFill();
-app.stage.addChild(trim);
-
+if (appHeight > 560) app.stage.addChild(trim);
 let walls = new PIXI.Graphics();
 walls
 	.beginFill(0xd8d5bb)
 	.drawPolygon([
 		//top left corner
-		appWidth / 6,
+		appWidth / 8,
 		(appHeight / 24) * 3,
 		//bottom left
 		0,
-		appHeight / 2.75 + appHeight / 24,
+		(appHeight * 3) / 24 +
+			Math.max(appWidth / 7.66, appWidth / 8 - 100 * welcomeScale.windows),
+		//extra piece
 		0,
 		appHeight - (appHeight / 24) * 3,
-		appWidth / 6,
+		appWidth / 8,
 		appHeight / 1.75 + appHeight / 24,
 		//bottom right
 		appWidth * 4,
@@ -171,7 +214,6 @@ walls
 		appWidth * 4,
 		(appHeight / 24) * 3,
 	])
-	// .drawRect(0, ceiling.height, appWidth * 4, ceiling.height / 3)
 	.endFill();
 app.stage.addChild(walls);
 
@@ -180,9 +222,15 @@ floor
 	.beginFill(0xb39b5f)
 	.drawPolygon([
 		//top left corner
-		appWidth / 6,
+		appWidth / 8,
 		appHeight - appHeight * 0.3,
 		//bottom left
+		0,
+		Math.min(
+			appHeight,
+			0.7 * appHeight +
+				Math.max(appWidth / 7.66, appWidth / 8 - 100 * welcomeScale.windows)
+		),
 		0,
 		appHeight,
 		//bottom right
@@ -202,45 +250,6 @@ app.stage.addChild(floor);
 export let windowWeather = new PIXI.Container();
 app.stage.addChild(windowWeather);
 
-//welcome view helper code
-
-//welcome view scaling with set height and width for windows
-let backWindowWidth = 600;
-let backWindowHeight = 300;
-let leftWindowHeight = 480;
-let welcomeScale = {
-	windows: 0.65,
-	snake1: 0.8,
-	snake2: 0.8,
-	monstera: 0.8,
-	maranta: 0.5,
-	card: 0.85,
-	findMe: 0.65,
-};
-if (appWidth < 400) {
-	welcomeScale.windows = 0.325;
-	welcomeScale.findMe = 0.325;
-	welcomeScale.card = 0.425;
-	welcomeScale.snake1 = 0.4;
-	welcomeScale.snake2 = 0.4;
-	welcomeScale.monstera = 0.4;
-	welcomeScale.maranta = 0.25;
-	backWindowWidth = 300;
-	backWindowHeight = 150;
-	leftWindowHeight = 240;
-} else if (appWidth < 500) {
-	welcomeScale.windows = 0.455;
-	welcomeScale.findMeDiv = 0.455;
-	welcomeScale.card = 0.595;
-	welcomeScale.snake1 = 0.56;
-	welcomeScale.snake2 = 0.56;
-	welcomeScale.monstera = 0.56;
-	welcomeScale.maranta = 0.35;
-	backWindowWidth = 420;
-	backWindowHeight = 210;
-	leftWindowHeight = 336;
-}
-
 //function to create welcome sprites
 function createWelcomeSprite(x, y, texture, type) {
 	const sprite = new Sprite(texture);
@@ -248,29 +257,14 @@ function createWelcomeSprite(x, y, texture, type) {
 	sprite.anchor.set(0.5);
 	sprite.position.x = x;
 	sprite.position.y = y;
-	if (type === 'windows') {
-		sprite.scale.set(welcomeScale.windows);
-	} else if (type === 'snake1') {
-		sprite.scale.set(welcomeScale.snake1);
-	} else if (type === 'snake2') {
-		sprite.scale.set(welcomeScale.snake2);
-	} else if (type === 'monstera') {
-		sprite.scale.set(welcomeScale.monstera);
-	} else if (type === 'maranta') {
-		sprite.scale.set(welcomeScale.maranta);
-	} else if (type === 'card') {
-		sprite.scale.set(welcomeScale.card);
-	} else if (type === 'findMe') {
-		sprite.interactive = true;
-		sprite.buttonMode = true;
-		sprite.scale.set(welcomeScale.findMe);
-	}
+	sprite.scale.set(welcomeScale[`${type}`]);
 	return sprite;
 }
 
 //textures
 const leftWindow = PIXI.Texture.from('/siteAssets/windowside.png');
 const backWindow = PIXI.Texture.from('/siteAssets/window.png');
+const wideWindow = PIXI.Texture.from('/siteAssets/wideWindow.png');
 const helloCard = PIXI.Texture.from('/siteAssets/hello-sticker.png');
 const snake1 = PIXI.Texture.from('/siteAssets/snakeplant-shadow.png');
 const snake2 = PIXI.Texture.from('/siteAssets/snakeplant2-shadow.png');
@@ -279,61 +273,61 @@ const monstera = PIXI.Texture.from('/siteAssets/monstera-shadow.png');
 
 //sprites
 export let leftWindowSprite = createWelcomeSprite(
-	appWidth / 7.9,
-	// trim.position.y + appHeight * 0.5,
-	trim.height,
+	appWidth / 8 - 100 * welcomeScale.windows,
+	Math.max(
+		appHeight / 8 + 695 * 0.5 * welcomeScale.windows + appHeight / 12,
+		695 * 0.5 * welcomeScale.windows + appHeight / 12
+	),
 	leftWindow,
 	'windows'
 );
 
-leftWindowSprite.height = leftWindowHeight;
-
-leftWindowSprite.position.y += leftWindowSprite.height / 4;
-
-let backWindowSprite = createWelcomeSprite(
-	leftWindowSprite.position.x + leftWindowSprite.width * 575,
-	leftWindowSprite.position.y - leftWindowSprite.height * 0.2,
-	backWindow,
-	'windows'
-);
-
-//changing to scale
-backWindowSprite.width = backWindowWidth;
-backWindowSprite.height = backWindowHeight;
+let backWindowSprite;
+if (appWidth < 500) {
+	backWindowSprite = createWelcomeSprite(
+		appWidth / 8 + 320 * welcomeScale.windows,
+		Math.max(appHeight / 8 + 158 * welcomeScale.windows + appHeight / 12, 0),
+		backWindow,
+		'windows'
+	);
+} else {
+	backWindowSprite = createWelcomeSprite(
+		appWidth / 8 + 490 * welcomeScale.windows,
+		Math.max(0, appHeight / 8 + 158 * welcomeScale.windows + appHeight / 12),
+		wideWindow,
+		'windows'
+	);
+}
 
 //left
 let snakeTwoSprite = createWelcomeSprite(
-	appWidth / 5.5,
-	appHeight - appHeight * 0.3,
+	appWidth / 6 + 50 * welcomeScale.snake2,
+	appHeight - appHeight * 0.3 - 200 * welcomeScale.snake2,
 	snake2,
 	'snake2'
 );
 
-snakeTwoSprite.position.y -= snakeTwoSprite.height * 200;
-snakeTwoSprite.position.x += snakeTwoSprite.width * 40;
-
 //right
 let snakeOneSprite = createWelcomeSprite(
-	appWidth / 6,
-	appHeight - appHeight * 0.3,
+	appWidth / 6 + 50 * welcomeScale.snake2 + 80 * welcomeScale.snake1,
+	appHeight - appHeight * 0.3 - 100 * welcomeScale.snake1,
 	snake1,
 	'snake1'
 );
-snakeOneSprite.position.y -= snakeOneSprite.height * 120;
-snakeOneSprite.position.x += snakeOneSprite.width * 160;
 
 let marantaSprite = createWelcomeSprite(
-	// appWidth / 1.7,
-	// appHeight / 4.2,
-	backWindowSprite.position.x + backWindowSprite.width / 3,
-	trim.position.y + ceiling.height / 1.4,
+	Math.min(
+		appWidth - 400 * welcomeScale.maranta,
+		appWidth / 8 + 1000 * welcomeScale.windows
+	),
+	Math.max(0, appHeight / 12 + 270 * welcomeScale.maranta),
 	maranta,
 	'maranta'
 );
 
 let monsteraShadowSprite = createWelcomeSprite(
-	appWidth / 5,
-	appHeight / 1.27,
+	150 * welcomeScale.monstera,
+	appHeight - 200 * welcomeScale.monstera,
 	monstera,
 	'monstera'
 );
@@ -389,6 +383,7 @@ let helloCardSprite = createWelcomeSprite(
 //Project view helper code
 
 //project view scaling
+
 export let scale = {
 	project: 0.5,
 	desk: 1,
@@ -405,7 +400,7 @@ export let scale = {
 };
 if (appWidth < 400) {
 	scale.project = scale.plant = 0.3;
-	scale.desk = 0.65;
+	scale.desk = 0.55;
 	scale.shelf = scale.board = scale.guestbook = 0.5;
 	scale.book = 0.7;
 	scale.decor = 0.6;
@@ -782,46 +777,12 @@ linkedin.on('tap', () => {
 
 /* radio and plant */
 let secondMonstera = createSprite(
-	(appWidth / 2) * 7.4,
+	(appWidth / 2) * 7.5,
 	(appHeight / 4) * 2.4,
 	monstera,
 	'decor'
 );
-// let radioText = PIXI.Texture.from('/siteAssets/radio.png');
-// let radio = createSprite(
-// 	(appWidth / 2) * 7.4,
-// 	(appHeight / 4) * 2.4 + 10 * scale.radio,
-// 	radioText,
-// 	'radio'
-// );
 
-// https://open.spotify.com/playlist/4pIW1SD0OMJOYqp30KjvGI?si=IZHmW7wFSu-DaMmBF1NtHQ
-// radio.on('mouseover', () => (radio.tint = 0x007ec7));
-// radio.on('mouseout', () => (radio.tint = 0xffffff));
-
-// //simply links to a spotify playlist
-// radio.on('click', () => {
-// 	window.open(
-// 		'https://open.spotify.com/playlist/4pIW1SD0OMJOYqp30KjvGI?si=IZHmW7wFSu-DaMmBF1NtHQ',
-// 		'_blank'
-// 	);
-// 	app.stage.pivot.x = 3 * appWidth;
-// });
-// radio.on('tap', () => {
-// 	window.open(
-// 		'https://open.spotify.com/playlist/4pIW1SD0OMJOYqp30KjvGI?si=IZHmW7wFSu-DaMmBF1NtHQ',
-// 		'_blank'
-// 	);
-// 	app.stage.pivot.x = 3 * appWidth;
-// });
-
-//trying to conditionally render spotify playlist
-//export let visible = false;
-// radio.on('click', () => {
-// 	visible = true;
-// 	console.log('hi');
-// });
-// radio.on('tap', () => (visible = true));
 
 /* table with guest book */
 
@@ -843,7 +804,7 @@ guestbook.on('mouseover', () => (guestbook.tint = 0x007ec7));
 guestbook.on('mouseout', () => (guestbook.tint = 0xffffff));
 guestbook.on('click', () => {
 	window.location.href =
-		'mailto:m.leslie.meng@gmail.com?subject=Just visited your  website!';
+		'mailto:m.leslie.meng@gmail.com?subject=Just visited your website!';
 	app.stage.pivot.x = 3 * appWidth;
 });
 guestbook.on('tap', () => {
