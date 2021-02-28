@@ -42,7 +42,6 @@ export default class Contact extends React.Component {
 	render() {
 		return (
 			<div>
-				<div id="loading">Loading... please wait!</div>
 				{this.state.visible ? (
 					<iframe
 						src="https://open.spotify.com/embed/playlist/4R4hOYnM63VAOTzfgqAR48"

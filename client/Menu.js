@@ -9,6 +9,7 @@ const hamHover = PIXI.Texture.from('/siteAssets/hamPurp.png');
 const closedIcon = PIXI.Texture.from('/siteAssets/x-mark.png');
 const closeHover = PIXI.Texture.from('/siteAssets/xPurp.png');
 let menuSprite;
+
 export default class Menu extends React.Component {
 	constructor() {
 		super();

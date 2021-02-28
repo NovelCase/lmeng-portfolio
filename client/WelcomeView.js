@@ -72,8 +72,8 @@ export default class Welcome extends React.Component {
 				//based on left window position and back window dimensions
 				backWindow.position.x -
 					backWindowWidth / 2 +
-					40 * PixiApp.welcomeScale.windows,
-				backWindow.position.y + 20 * PixiApp.welcomeScale.windows,
+					40 * PixiApp.scale.windows,
+				backWindow.position.y + 20 * PixiApp.scale.windows,
 
 				backWindowWidth * 0.9,
 				backWindowHeight * 0.85
@@ -91,23 +91,23 @@ export default class Welcome extends React.Component {
 				//top left corner
 				leftWindowSprite.x -
 					leftWindowSprite.width / 2 +
-					30 * PixiApp.welcomeScale.windows,
+					30 * PixiApp.scale.windows,
 
 				leftWindowSprite.position.y - leftWindowHeight * 0.45,
 				//bottom left
 				leftWindowSprite.x -
 					leftWindowSprite.width / 2 +
-					30 * PixiApp.welcomeScale.windows,
+					30 * PixiApp.scale.windows,
 				leftWindowSprite.position.y + leftWindowHeight * 0.45,
 				//bottom right
 				leftWindowSprite.x +
 					leftWindowSprite.width / 2 -
-					30 * PixiApp.welcomeScale.windows,
+					30 * PixiApp.scale.windows,
 				leftWindowSprite.position.y + leftWindowHeight * 0.25,
 				//top right corner
 				leftWindowSprite.x +
 					leftWindowSprite.width / 2 -
-					30 * PixiApp.welcomeScale.windows,
+					30 * PixiApp.scale.windows,
 				leftWindowSprite.position.y - leftWindowHeight * 0.25,
 			])
 			.endFill();
@@ -119,14 +119,14 @@ export default class Welcome extends React.Component {
 				//top left corner
 				leftWindowSprite.x -
 					leftWindowSprite.width / 2 +
-					30 * PixiApp.welcomeScale.windows,
+					30 * PixiApp.scale.windows,
 				leftWindowSprite.position.y - leftWindowHeight * 0.45,
 				//bottom left
 				Math.min(
 					PixiApp.appWidth / 25,
 					leftWindowSprite.x -
 						leftWindowSprite.width / 2 +
-						30 * PixiApp.welcomeScale.windows
+						30 * PixiApp.scale.windows
 				),
 				PixiApp.appHeight,
 				//bottom right
@@ -135,7 +135,7 @@ export default class Welcome extends React.Component {
 				//top right corner
 				leftWindowSprite.x +
 					leftWindowSprite.width / 2 -
-					30 * PixiApp.welcomeScale.windows,
+					30 * PixiApp.scale.windows,
 				leftWindowSprite.position.y - leftWindowHeight * 0.25,
 			])
 			.endFill();
@@ -147,11 +147,8 @@ export default class Welcome extends React.Component {
 				//top left corner
 				backWindow.position.x -
 					backWindowWidth / 2 +
-					40 * PixiApp.welcomeScale.windows,
-				Math.max(
-					190 * PixiApp.welcomeScale.windows + PixiApp.appHeight / 12,
-					0
-				),
+					40 * PixiApp.scale.windows,
+				backWindow.position.y,
 				//bottom left
 				PixiApp.appWidth / 15,
 				PixiApp.appHeight,
@@ -164,11 +161,8 @@ export default class Welcome extends React.Component {
 				//top right corner
 				backWindow.position.x +
 					backWindowWidth / 2 -
-					40 * PixiApp.welcomeScale.windows,
-				Math.max(
-					190 * PixiApp.welcomeScale.windows + PixiApp.appHeight / 12,
-					0
-				),
+					40 * PixiApp.scale.windows,
+				backWindow.position.y,
 				// connect
 			])
 			.endFill();
@@ -238,7 +232,7 @@ export default class Welcome extends React.Component {
 				.drawRect(
 					//based on left window position and back window dimensions
 					backWindowX - backWindowWidth / 2,
-					backWindow.position.y + 20 * PixiApp.welcomeScale.windows,
+					backWindow.position.y + 20 * PixiApp.scale.windows,
 
 					backWindowWidth,
 					backWindowHeight * 0.9
@@ -258,23 +252,23 @@ export default class Welcome extends React.Component {
 					//top left corner
 					leftWindowSprite.x -
 						leftWindowSprite.width / 2 +
-						30 * PixiApp.welcomeScale.windows,
+						30 * PixiApp.scale.windows,
 
 					leftWindowSprite.position.y - leftWindowHeight * 0.45,
 					//bottom left
 					leftWindowSprite.x -
 						leftWindowSprite.width / 2 +
-						30 * PixiApp.welcomeScale.windows,
+						30 * PixiApp.scale.windows,
 					leftWindowSprite.position.y + leftWindowHeight * 0.45,
 					//bottom right
 					leftWindowSprite.x +
 						leftWindowSprite.width / 2 -
-						30 * PixiApp.welcomeScale.windows,
+						30 * PixiApp.scale.windows,
 					leftWindowSprite.position.y + leftWindowHeight * 0.25,
 					//top right corner
 					leftWindowSprite.x +
 						leftWindowSprite.width / 2 -
-						30 * PixiApp.welcomeScale.windows,
+						30 * PixiApp.scale.windows,
 					leftWindowSprite.position.y - leftWindowHeight * 0.25,
 				])
 				.endFill();

@@ -1,4 +1,4 @@
-const { Sprite } = require('pixi.js');
+const { Sprite, SCALE_MODES } = require('pixi.js');
 const PIXI = require('pixi.js');
 const Project = require('../client/ProjectView');
 var _ = require('lodash');
@@ -32,10 +32,7 @@ export const appWidth = app.renderer.view.width;
 export const appHeight = app.renderer.view.height;
 
 let left = keyboard('ArrowLeft'),
-	up = keyboard('ArrowUp'),
-	right = keyboard('ArrowRight'),
-	down = keyboard('ArrowDown'),
-	space = keyboard(' ' || 'Spacebar');
+	right = keyboard('ArrowRight');
 
 //Left arrow key `press` method
 left.press = () => {
@@ -122,56 +119,77 @@ function keyboard(value) {
 //welcome view helper code
 
 //welcome view scaling with set height and width for windows
-let backWindowWidth = 600;
-let backWindowHeight = 300;
-let leftWindowHeight = 480;
-export let welcomeScale = {
+//project view scaling
+
+export let scale = {
+	project: 0.5,
+	desk: 0.8,
+	book: 1,
+	shelf: 0.8,
+	coffee: 0.5,
+	table: 1.1,
+	radio: 1.3,
+	plant: 0.5,
+	board: 0.7,
+	guestbook: 0.8,
+	decor: 0.9,
+	keys: 0.5,
 	windows: 0.65,
-	snake1: 0.8,
-	snake2: 0.8,
+	snake: 0.8,
 	monstera: 0.8,
 	maranta: 0.5,
 	card: 0.85,
-	findMe: 0.65,
+	findMe: 0.5,
 	palms: 0.75,
 };
 if (appHeight < 400) {
-	welcomeScale.windows = 0.3;
-	welcomeScale.card = 0.4;
-	welcomeScale.snake1 = 0.4;
-	welcomeScale.snake2 = 0.4;
-	welcomeScale.monstera = 0.4;
-	welcomeScale.maranta = 0.25;
-	welcomeScale.palms = 0.35;
+	scale.project = 0.2;
+	scale.plant = 0.15;
+	scale.desk = 0.45;
+	scale.shelf = scale.decor = scale.table = 0.5;
+	scale.guestbook = scale.palms = 0.35;
+	scale.board = scale.card = scale.snake = scale.monstera = 0.4;
+	scale.book = 0.6;
+	scale.radio = 0.8;
+	scale.keys = scale.windows = scale.coffee = 0.3;
+	scale.maranta = 0.25;
 } else if (appHeight < 500) {
-	welcomeScale.windows = 0.4;
-	welcomeScale.card = 0.4;
-	welcomeScale.snake1 = 0.4;
-	welcomeScale.snake2 = 0.4;
-	welcomeScale.monstera = 0.4;
-	welcomeScale.maranta = 0.25;
-	welcomeScale.palms = 0.4;
+	scale.project = scale.maranta = 0.25;
+	scale.plant = 0.2;
+	scale.desk = 0.45;
+	scale.shelf = scale.board = scale.guestbook = 0.5;
+	scale.book = 0.6;
+	scale.decor = 0.5;
+	scale.table = 0.7;
+	scale.radio = 0.8;
+	scale.keys = scale.coffee = 0.3;
+	scale.windows = scale.card = scale.snake = scale.monstera = scale.palms = 0.4;
 } else if (appWidth < 400) {
-	welcomeScale.windows = 0.48;
-	welcomeScale.card = 0.45;
-	welcomeScale.snake1 = 0.48;
-	welcomeScale.snake2 = 0.48;
-	welcomeScale.monstera = 0.48;
-	welcomeScale.maranta = 0.3;
-	backWindowWidth = 270;
-	backWindowHeight = 210;
-	leftWindowHeight = 330;
+	scale.project = scale.plant = scale.maranta = 0.3;
+	scale.desk = 0.55;
+	scale.shelf = scale.board = scale.guestbook = 0.5;
+	scale.book = 0.7;
+	scale.decor = 0.6;
+	scale.table = 0.8;
+	scale.radio = 0.9;
+	scale.windows = scale.snake = scale.monstera = 0.48;
+	scale.card = 0.45;
+	scale.keys = scale.coffee = 0.4;
 } else if (appWidth < 500) {
-	welcomeScale.windows = 0.455;
-	welcomeScale.findMeDiv = 0.455;
-	welcomeScale.card = 0.595;
-	welcomeScale.snake1 = 0.56;
-	welcomeScale.snake2 = 0.56;
-	welcomeScale.monstera = 0.56;
-	welcomeScale.maranta = 0.35;
-	backWindowWidth = 270;
-	backWindowHeight = 210;
-	leftWindowHeight = 330;
+	scale.project = scale.maranta = 0.35;
+	scale.card = 0.5;
+	scale.plant = 0.34;
+	scale.desk = 0.75;
+	scale.guestbook = 0.7;
+	scale.book = 0.8;
+	scale.shelf = scale.decor = 0.6;
+	scale.table = scale.radio = 0.9;
+	scale.keys = scale.coffee = 0.4;
+	scale.windows = findMeDiv = 0.455;
+	scale.windows = scale.snake = scale.monstera = 0.56;
+} else if (appWidth > 900) {
+	scale.shelf = 1;
+	scale.desk = 1;
 }
 /****** Background *******/
 let backX;
@@ -200,11 +218,11 @@ trim
 		//bottom left
 		0,
 		(appHeight * 1) / 12 -
-			Math.max(appWidth / 7.25, appWidth / 7 - 225 * welcomeScale.windows),
+			Math.max(appWidth / 7.25, appWidth / 7 - 225 * scale.windows),
 		//capture weird triangle
 		0,
 		(appHeight * 3.5) / 24 -
-			Math.max(appWidth / 7.25, appWidth / 7 - 225 * welcomeScale.windows),
+			Math.max(appWidth / 7.25, appWidth / 7 - 225 * scale.windows),
 
 		backX,
 		(appHeight / 24) * 3, //bottom right
@@ -227,7 +245,7 @@ walls
 		//bottom left
 		0,
 		(appHeight * 3.5) / 24 -
-			Math.max(appWidth / 7.25, appWidth / 7 - 225 * welcomeScale.windows),
+			Math.max(appWidth / 7.25, appWidth / 7 - 225 * scale.windows),
 		//extra piece
 
 		0,
@@ -254,7 +272,7 @@ floor
 		Math.min(
 			appHeight,
 			0.7 * appHeight +
-				Math.max(appWidth / 7.66, appWidth / 8 - 100 * welcomeScale.windows)
+				Math.max(appWidth / 7.66, appWidth / 8 - 100 * scale.windows)
 		),
 		0,
 		appHeight,
@@ -275,18 +293,6 @@ app.stage.addChild(floor);
 export let windowWeather = new PIXI.Container();
 app.stage.addChild(windowWeather);
 
-//function to create welcome sprites
-function createWelcomeSprite(x, y, texture, type, anchor = null) {
-	const sprite = new Sprite(texture);
-	app.stage.addChild(sprite);
-	if (anchor === null) sprite.anchor.set(0.5);
-	else sprite.anchor.set(0.5, anchor);
-	sprite.position.x = x;
-	sprite.position.y = y;
-	sprite.scale.set(welcomeScale[`${type}`]);
-	return sprite;
-}
-
 //textures
 const leftWindow = PIXI.Texture.from('/siteAssets/tiltedWindow1.png');
 const backWindow = PIXI.Texture.from('/siteAssets/window.png');
@@ -302,11 +308,9 @@ const palm = PIXI.Texture.from('/siteAssets/palm.png');
 const areca = PIXI.Texture.from('/siteAssets/areca.png');
 //sprites
 
-let leftWindowSprite = createWelcomeSprite(
-	backX - 150 * welcomeScale.windows,
-
-	appHeight / 8 + 420 * 0.5 * welcomeScale.windows + backY,
-
+let leftWindowSprite = createSprite(
+	backX - 150 * scale.windows,
+	appHeight / 8 + 420 * 0.5 * scale.windows + backY,
 	leftWindow,
 	'windows'
 );
@@ -314,16 +318,16 @@ let leftWindowSprite = createWelcomeSprite(
 let backWindowSprite;
 
 if (appWidth < 700) {
-	backWindowSprite = createWelcomeSprite(
-		backX + 320 * welcomeScale.windows,
+	backWindowSprite = createSprite(
+		backX + 320 * scale.windows,
 		(appHeight / 24) * 3 + backY,
 		backWindow,
 		'windows',
 		0
 	);
 } else {
-	backWindowSprite = createWelcomeSprite(
-		backX + 450 * welcomeScale.windows,
+	backWindowSprite = createSprite(
+		backX + 450 * scale.windows,
 		(appHeight / 24) * 3 + backY,
 		wideWindow,
 		'windows',
@@ -333,128 +337,58 @@ if (appWidth < 700) {
 
 export { leftWindowSprite, backWindowSprite };
 //left
-let snakeTwoSprite = createWelcomeSprite(
-	appWidth / 6 + 50 * welcomeScale.snake2,
-	appHeight - appHeight * 0.3 - 200 * welcomeScale.snake2,
+let snakeTwoSprite = createSprite(
+	appWidth / 6 + 50 * scale.snake,
+	appHeight - appHeight * 0.3 - 200 * scale.snake,
 	snake2,
-	'snake2'
+	'snake'
 );
 
 //right
-let snakeOneSprite = createWelcomeSprite(
-	appWidth / 6 + 50 * welcomeScale.snake2 + 80 * welcomeScale.snake1,
-	appHeight - appHeight * 0.3 - 100 * welcomeScale.snake1,
+let snakeOneSprite = createSprite(
+	appWidth / 6 + 50 * scale.snake + 80 * scale.snake,
+	appHeight - appHeight * 0.3 - 100 * scale.snake,
 	snake1,
-	'snake1'
+	'snake'
 );
 
-let marantaSprite = createWelcomeSprite(
-	Math.min(
-		appWidth - 400 * welcomeScale.maranta,
-		appWidth / 8 + 1000 * welcomeScale.windows
-	),
-	Math.max(0, appHeight / 12 + 270 * welcomeScale.maranta),
+let marantaSprite = createSprite(
+	Math.min(appWidth - 400 * scale.maranta, appWidth / 8 + 1000 * scale.windows),
+	Math.max(0, appHeight / 12 + 270 * scale.maranta),
 	maranta,
 	'maranta'
 );
 
-let monsteraShadowSprite = createWelcomeSprite(
-	120 * welcomeScale.monstera,
-	appHeight - 200 * welcomeScale.monstera,
+let monsteraShadowSprite = createSprite(
+	120 * scale.monstera,
+	appHeight - 200 * scale.monstera,
 	monstera,
 	'monstera'
 );
 
-let helloCardSprite = createWelcomeSprite(
+let helloCardSprite = createSprite(
 	appWidth / 1.4,
 	appHeight / 1.4,
 	helloCard,
 	'card'
 );
 if (appWidth > 800) {
-	let hoyaSprite = createWelcomeSprite(
-		appWidth / 1,
-		backY / 2,
-		hoya,
-		'maranta',
-		0
-	);
-	let palmSprite = createWelcomeSprite(
-		appWidth * 1.9 + 50 * welcomeScale.snake2 + 80 * welcomeScale.snake1,
-		appHeight - appHeight * 0.3 - 100 * welcomeScale.snake1,
+	let hoyaSprite = createSprite(appWidth / 1, backY / 2, hoya, 'maranta', 0);
+	let palmSprite = createSprite(
+		appWidth * 1.9 + 50 * scale.snake + 80 * scale.snake,
+		appHeight - appHeight * 0.3 - 100 * scale.snake,
 		palm,
 		'palms'
 	);
-	let arecaSprite = createWelcomeSprite(
-		appWidth * 3.01 + 50 * welcomeScale.snake2,
-		appHeight - appHeight * 0.3 - 120 * welcomeScale.snake2,
+	let arecaSprite = createSprite(
+		appWidth * 3.01 + 50 * scale.snake,
+		appHeight - appHeight * 0.3 - 120 * scale.snake,
 		areca,
 		'palms'
 	);
 }
 
 //Project view helper code
-
-//project view scaling
-
-export let scale = {
-	project: 0.5,
-	desk: 0.8,
-	book: 1,
-	shelf: 0.8,
-	coffee: 0.5,
-	table: 1.1,
-	radio: 1.3,
-	plant: 0.5,
-	board: 0.7,
-	guestbook: 0.8,
-	decor: 0.9,
-	keys: 0.5,
-};
-if (appHeight < 400) {
-	scale.project = 0.2;
-	scale.plant = 0.15;
-	scale.desk = 0.45;
-	scale.shelf = 0.5;
-	scale.guestbook = 0.35;
-	scale.board = 0.4;
-	scale.book = 0.6;
-	scale.decor = 0.5;
-	scale.table = 0.5;
-	scale.radio = 0.8;
-	scale.keys = scale.coffee = 0.3;
-} else if (appHeight < 500) {
-	scale.project = 0.25;
-	scale.plant = 0.2;
-	scale.desk = 0.45;
-	scale.shelf = scale.board = scale.guestbook = 0.5;
-	scale.book = 0.6;
-	scale.decor = 0.5;
-	scale.table = 0.7;
-	scale.radio = 0.8;
-	scale.keys = scale.coffee = 0.3;
-} else if (appWidth < 400) {
-	scale.project = scale.plant = 0.3;
-	scale.desk = 0.55;
-	scale.shelf = scale.board = scale.guestbook = 0.5;
-	scale.book = 0.7;
-	scale.decor = 0.6;
-	scale.table = 0.8;
-	scale.radio = 0.9;
-	scale.keys = scale.coffee = 0.4;
-} else if (appWidth < 500) {
-	scale.project = 0.35;
-	scale.plant = 0.34;
-	scale.desk = 0.75;
-	scale.guestbook = 0.7;
-	scale.book = 0.8;
-	scale.shelf = scale.decor = 0.6;
-	scale.table = scale.radio = 0.9;
-	scale.keys = scale.coffee = 0.4;
-} else if (appWidth > 900) {
-	scale.shelf = 1;
-	scale.desk = 1;
-}
 
 //function to create project sprites
 export function createSprite(x, y, texture, type, anchor = 0.5) {
@@ -482,10 +416,12 @@ export function createSprite(x, y, texture, type, anchor = 0.5) {
 		sprite.on('pointerover', () => {
 			sprite.rotation = 0.05;
 			sprite.scale.set(scale[`${type}`] + 0.03);
+			sprite.tint(0xfffff9);
 		});
 		sprite.on('pointerout', () => {
 			sprite.rotation = 0;
 			sprite.scale.set(scale[`${type}`]);
+			sprite.tint(0xffffff);
 		});
 	} else {
 		sprite.scale.set(scale[`${type}`]);
@@ -507,15 +443,7 @@ export let chai = createSprite(
 	'project',
 	0
 );
-chai.on('pointerover', () => (chai.tint = 0xfffff9));
-chai.on('pointerout', () => (chai.tint = 0xffffff));
 chai.on('pointertap', () => {
-	let projects = [promiseHS, gobARk];
-	Project.onClick('project', 'chai', projects);
-	projects.forEach((project) => (project.interactive = false));
-	app.stage.pivot.x = appWidth;
-});
-chai.on('tap', () => {
 	let projects = [promiseHS, gobARk];
 	Project.onClick('project', 'chai', projects);
 	projects.forEach((project) => (project.interactive = false));
@@ -529,15 +457,7 @@ export let gobARk = createSprite(
 	'project',
 	0
 );
-gobARk.on('pointerover', () => (gobARk.tint = 0xfffff9));
-gobARk.on('pointerout', () => (gobARk.tint = 0xffffff));
 gobARk.on('pointertap', () => {
-	let projects = [promiseHS, chai];
-	Project.onClick('project', 'gobARk', projects);
-	projects.forEach((project) => (project.interactive = false));
-	app.stage.pivot.x = appWidth;
-});
-gobARk.on('tap', () => {
 	let projects = [promiseHS, chai];
 	Project.onClick('project', 'gobARk', projects);
 	projects.forEach((project) => (project.interactive = false));
@@ -551,20 +471,13 @@ export let promiseHS = createSprite(
 	'project'
 );
 
-promiseHS.on('pointerover', () => (promiseHS.tint = 0xfffff9));
-promiseHS.on('pointerout', () => (promiseHS.tint = 0xffffff));
 promiseHS.on('pointertap', () => {
 	let projects = [gobARk, chai];
 	Project.onClick('project', 'promise', projects);
 	projects.forEach((project) => (project.interactive = false));
 	app.stage.pivot.x = appWidth;
 });
-promiseHS.on('tap', () => {
-	let projects = [gobARk, chai];
-	Project.onClick('project', 'promise', projects);
-	projects.forEach((project) => (project.interactive = false));
-	app.stage.pivot.x = appWidth;
-});
+
 let desk = createSprite(
 	(appWidth / 2) * 3,
 	(appHeight / 4) * 2.4,
@@ -598,8 +511,6 @@ export let bfa = createSprite(
 	bfaText,
 	'book'
 );
-bfa.on('pointerover', () => (bfa.tint = 0xaf0000));
-bfa.on('pointerout', () => (bfa.tint = 0xffffff));
 bfa.on('pointertap', () => {
 	let items = [convo, blueOcean, krimson, goat, stagg];
 	Project.onClick('about', 'bfa', items);
@@ -614,8 +525,6 @@ export let convo = createSprite(
 	convoText,
 	'book'
 );
-convo.on('pointerover', () => (convo.tint = 0xfffff9));
-convo.on('pointerout', () => (convo.tint = 0xffffff));
 convo.on('pointertap', () => {
 	let items = [bfa, blueOcean, presence, krimson, goat, stagg];
 	Project.onClick('about', 'convo', items);
@@ -630,8 +539,6 @@ export let blueOcean = createSprite(
 	blueText,
 	'book'
 );
-blueOcean.on('pointerover', () => (blueOcean.tint = 0xfffff9));
-blueOcean.on('pointerout', () => (blueOcean.tint = 0xffffff));
 blueOcean.on('pointertap', () => {
 	let items = [bfa, convo, presence, krimson, goat, stagg];
 	Project.onClick('about', 'blueOcean', items);
@@ -647,8 +554,6 @@ export let presence = createSprite(
 	presText,
 	'book'
 );
-presence.on('pointerover', () => (presence.tint = 0xfffff9));
-presence.on('pointerout', () => (presence.tint = 0xffffff));
 presence.on('pointertap', () => {
 	let items = [bfa, convo, blueOcean, krimson, goat, stagg];
 	Project.onClick('about', 'presence', items);
@@ -663,8 +568,6 @@ export let krimson = createSprite(
 	krimTexture,
 	'plant'
 );
-krimson.on('pointerover', () => (krimson.tint = 0xfffff9));
-krimson.on('pointerout', () => (krimson.tint = 0xffffff));
 krimson.on('pointertap', () => {
 	let items = [bfa, convo, blueOcean, presence, goat, stagg];
 	Project.onClick('about', 'krimson', items);
@@ -687,8 +590,6 @@ let goat = createSprite(
 	goatText,
 	'coffee'
 );
-goat.on('pointerover', () => (goat.tint = 0xfffff9));
-goat.on('pointerout', () => (goat.tint = 0xffffff));
 goat.on('pointertap', () => {
 	let items = [bfa, convo, blueOcean, presence, krimson, stagg];
 	Project.onClick('about', 'goat', items);
@@ -703,8 +604,6 @@ let stagg = createSprite(
 	felText,
 	'coffee'
 );
-stagg.on('pointerover', () => (stagg.tint = 0xfffff9));
-stagg.on('pointerout', () => (stagg.tint = 0xffffff));
 stagg.on('pointertap', () => {
 	let items = [bfa, convo, blueOcean, presence, krimson, goat];
 	Project.onClick('about', 'stagg', items);
@@ -738,8 +637,6 @@ let github = createSprite(
 	'keys',
 	0
 );
-github.on('pointerover', () => (github.tint = 0xfffff9));
-github.on('pointerout', () => (github.tint = 0xffffff));
 github.on('pointertap', () => {
 	window.open('https://github.com/leslie-meng', '_blank');
 	app.stage.pivot.x = 3 * appWidth;
@@ -753,8 +650,6 @@ let codepen = createSprite(
 	'keys',
 	0
 );
-codepen.on('pointerover', () => (codepen.tint = 0xfffff9));
-codepen.on('pointerout', () => (codepen.tint = 0xffffff));
 codepen.on('pointertap', () => {
 	window.open('https://codepen.io/leslie-meng', '_blank');
 	app.stage.pivot.x = 3 * appWidth;
@@ -768,8 +663,6 @@ let linkedin = createSprite(
 	'keys',
 	0
 );
-linkedin.on('pointerover', () => (linkedin.tint = 0xfffff9));
-linkedin.on('pointerout', () => (linkedin.tint = 0xffffff));
 linkedin.on('pointertap', () => {
 	window.open('https://www.linkedin.com/in/leslie-meng/', '_blank');
 	app.stage.pivot.x = 3 * appWidth;
@@ -799,8 +692,6 @@ let guestbook = createSprite(
 	gbookText,
 	'guestbook'
 );
-guestbook.on('pointerover', () => (guestbook.tint = 0xfffff9));
-guestbook.on('pointerout', () => (guestbook.tint = 0xffffff));
 guestbook.on('pointertap', () => {
 	window.location.href =
 		'mailto:m.leslie.meng@gmail.com?subject=Just visited your website!';
