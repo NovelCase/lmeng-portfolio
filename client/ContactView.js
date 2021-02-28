@@ -16,18 +16,16 @@ export default class Contact extends React.Component {
 	componentDidMount() {
 		let radioText = PIXI.Texture.from('/siteAssets/radio.png');
 		let radio = PixiApp.createSprite(
-			(width / 2) * 7.4,
-			(height / 4) * 2.4 + 10 * PixiApp.scale.radio,
+			PixiApp.secondMonstera.position.x,
+			PixiApp.secondMonstera.position.y + PixiApp.scale.radio * 15,
 			radioText,
 			'radio'
 		);
-		radio.on('mouseover', () => (radio.tint = 0x007ec7));
-		radio.on('mouseout', () => (radio.tint = 0xffffff));
-		radio.on('click', () => {
+		radio.on('pointerover', () => (radio.tint = 0xfffff9));
+		radio.on('pointerout', () => (radio.tint = 0xffffff));
+		radio.on('pointertap', () => {
 			this.onClickTap();
-			console.log('hi');
 		});
-		radio.on('tap', () => this.onClickTap());
 	}
 
 	onClickTap() {
@@ -42,20 +40,20 @@ export default class Contact extends React.Component {
 	}
 
 	render() {
-		console.log('visible? ', this.state.visible);
 		return (
 			<div>
+				<div id="loading">Loading... please wait!</div>
 				{this.state.visible ? (
 					<iframe
-						src='https://open.spotify.com/embed/playlist/4R4hOYnM63VAOTzfgqAR48'
+						src="https://open.spotify.com/embed/playlist/4R4hOYnM63VAOTzfgqAR48"
 						width={width / 4}
 						height={height}
 						// frameborder='0'
-						allowtransparency='true'
-						allow='encrypted-media'
+						allowtransparency="true"
+						allow="encrypted-media"
 					></iframe>
 				) : (
-					<div />
+					<>test</>
 				)}
 			</div>
 		);
