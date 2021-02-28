@@ -5,12 +5,14 @@ import '../public/style.css';
 import Project from './ProjectView';
 import Welcome from './WelcomeView';
 import Contact from './ContactView';
+import Menu from './Menu';
 import * as PixiApp from '../pixi/projectStage.js';
 require('babel-core/register');
 require('babel-polyfill');
 
 ReactDOM.render(
 	<div>
+		<Menu />
 		<Project />
 		<Welcome />
 		<Contact />

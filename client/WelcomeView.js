@@ -73,10 +73,7 @@ export default class Welcome extends React.Component {
 				backWindow.position.x -
 					backWindowWidth / 2 +
 					40 * PixiApp.welcomeScale.windows,
-				Math.max(
-					180 * PixiApp.welcomeScale.windows + PixiApp.appHeight / 12,
-					0
-				),
+				backWindow.position.y + 20 * PixiApp.welcomeScale.windows,
 
 				backWindowWidth * 0.9,
 				backWindowHeight * 0.85
@@ -125,7 +122,12 @@ export default class Welcome extends React.Component {
 					30 * PixiApp.welcomeScale.windows,
 				leftWindowSprite.position.y - leftWindowHeight * 0.45,
 				//bottom left
-				PixiApp.appWidth / 25,
+				Math.min(
+					PixiApp.appWidth / 25,
+					leftWindowSprite.x -
+						leftWindowSprite.width / 2 +
+						30 * PixiApp.welcomeScale.windows
+				),
 				PixiApp.appHeight,
 				//bottom right
 				(PixiApp.appWidth / 3) * 2,
@@ -236,10 +238,7 @@ export default class Welcome extends React.Component {
 				.drawRect(
 					//based on left window position and back window dimensions
 					backWindowX - backWindowWidth / 2,
-					Math.max(
-						180 * PixiApp.welcomeScale.windows + PixiApp.appHeight / 12,
-						0
-					),
+					backWindow.position.y + 20 * PixiApp.welcomeScale.windows,
 
 					backWindowWidth,
 					backWindowHeight * 0.9

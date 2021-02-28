@@ -17,8 +17,34 @@ body {
 }
 #pixi {
 }
-
+.menu {
+	position: absolute;
+	top: 4px;
+	left: 0px;
+	align-items: center;
+	display: flex;
+	flex-flow: row wrap;
+	color: #a68655;
+	width: 80%;
+	margin: 0 10%;
+	justify-content: space-around;
+}
+.menu > h1 {
+	font-size: 16pt;
+	margin: 10px;
+}
+.menu > h1:hover {
+	color: #007ec7;
+}
 #outerContainer {
 	display: flex;
 	flex-direction: row;
+}
+@media only screen and (min-width: 600px) and (min-height: 400px) {
+	.menu {
+		top: 10px;
+	}
+	.menu > h1 {
+		font-size: 28pt;
+	}
 }

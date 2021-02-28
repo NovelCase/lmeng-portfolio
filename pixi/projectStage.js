@@ -43,15 +43,16 @@ left.press = () => {
 		app.stage.pivot.x =
 			Math.floor(app.stage.pivot.x / appWidth) * appWidth - appWidth;
 	} else app.stage.pivot.x = 0;
+	menuContainer.position.x = app.stage.pivot.x + 20;
 };
-//Up
-up.press = () => {};
+
 //Right
 right.press = () => {
 	if (app.stage.pivot.x <= appWidth * 2) {
 		app.stage.pivot.x =
 			Math.floor(app.stage.pivot.x / appWidth) * appWidth + appWidth;
 	} else app.stage.pivot.x = 3 * appWidth;
+	menuContainer.position.x = app.stage.pivot.x + 20;
 };
 
 function keyboard(value) {
@@ -94,6 +95,7 @@ function keyboard(value) {
 		) {
 			app.stage.pivot.x = appWidth * 3;
 		} else app.stage.pivot.x += event.deltaY * 1.2 || event.deltaX * 1.2;
+		menuContainer.position.x = app.stage.pivot.x + 20;
 	};
 	function onWindowResize() {
 		app.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -131,8 +133,25 @@ export let welcomeScale = {
 	maranta: 0.5,
 	card: 0.85,
 	findMe: 0.65,
+	palms: 0.75,
 };
-if (appWidth < 400) {
+if (appHeight < 400) {
+	welcomeScale.windows = 0.3;
+	welcomeScale.card = 0.4;
+	welcomeScale.snake1 = 0.4;
+	welcomeScale.snake2 = 0.4;
+	welcomeScale.monstera = 0.4;
+	welcomeScale.maranta = 0.25;
+	welcomeScale.palms = 0.35;
+} else if (appHeight < 500) {
+	welcomeScale.windows = 0.4;
+	welcomeScale.card = 0.4;
+	welcomeScale.snake1 = 0.4;
+	welcomeScale.snake2 = 0.4;
+	welcomeScale.monstera = 0.4;
+	welcomeScale.maranta = 0.25;
+	welcomeScale.palms = 0.4;
+} else if (appWidth < 400) {
 	welcomeScale.windows = 0.48;
 	welcomeScale.card = 0.45;
 	welcomeScale.snake1 = 0.48;
@@ -155,20 +174,28 @@ if (appWidth < 400) {
 	leftWindowHeight = 330;
 }
 /****** Background *******/
-
+let backX;
+let backY;
+if (appHeight < 400) {
+	backX = appWidth / 12;
+	backY = appHeight / 24;
+} else {
+	backX = appWidth / 8;
+	backY = appHeight / 16;
+}
 let ceiling = new PIXI.Graphics();
 ceiling
 	.beginFill(0xf9eee0)
 	.drawRect(0, 0, appWidth * 4, appHeight / 2)
 	.endFill();
-if (appHeight > 560) app.stage.addChild(ceiling);
+app.stage.addChild(ceiling);
 
 export let trim = new PIXI.Graphics();
 trim
 	.beginFill(0xf1cc9c)
 	.drawPolygon([
 		//top left corner
-		appWidth / 8,
+		backX,
 		appHeight / 12,
 		//bottom left
 		0,
@@ -179,7 +206,7 @@ trim
 		(appHeight * 3.5) / 24 -
 			Math.max(appWidth / 7.25, appWidth / 7 - 225 * welcomeScale.windows),
 
-		appWidth / 8,
+		backX,
 		(appHeight / 24) * 3, //bottom right
 		appWidth * 4,
 		appHeight / 3,
@@ -188,13 +215,13 @@ trim
 		appHeight / 12,
 	])
 	.endFill();
-if (appHeight > 560) app.stage.addChild(trim);
+app.stage.addChild(trim);
 let walls = new PIXI.Graphics();
 walls
 	.beginFill(0x9cc4cb)
 	.drawPolygon([
 		//top left corner
-		appWidth / 8,
+		backX,
 		(appHeight / 24) * 3,
 
 		//bottom left
@@ -220,7 +247,7 @@ floor
 	.beginFill(0xa68655)
 	.drawPolygon([
 		//top left corner
-		appWidth / 8,
+		backX,
 		appHeight - appHeight * 0.3,
 		//bottom left
 		0,
@@ -270,36 +297,41 @@ const snake2 = PIXI.Texture.from('/siteAssets/snakeplant2-shadow.png');
 const maranta = PIXI.Texture.from('/siteAssets/marantatest.png');
 const monstera = PIXI.Texture.from('/siteAssets/monsteraLT.png');
 
+const hoya = PIXI.Texture.from('/siteAssets/hoya.png');
+const palm = PIXI.Texture.from('/siteAssets/palm.png');
+const areca = PIXI.Texture.from('/siteAssets/areca.png');
 //sprites
-export let leftWindowSprite = createWelcomeSprite(
-	appWidth / 8 - 150 * welcomeScale.windows,
-	Math.max(
-		appHeight / 8 + 420 * 0.5 * welcomeScale.windows + appHeight / 12,
-		420 * 0.5 * welcomeScale.windows + appHeight / 12
-	),
+
+let leftWindowSprite = createWelcomeSprite(
+	backX - 150 * welcomeScale.windows,
+
+	appHeight / 8 + 420 * 0.5 * welcomeScale.windows + backY,
+
 	leftWindow,
 	'windows'
 );
 
-export let backWindowSprite;
+let backWindowSprite;
+
 if (appWidth < 700) {
 	backWindowSprite = createWelcomeSprite(
-		appWidth / 8 + 320 * welcomeScale.windows,
-		Math.max(158 * welcomeScale.windows + appHeight / 12, 0),
+		backX + 320 * welcomeScale.windows,
+		(appHeight / 24) * 3 + backY,
 		backWindow,
 		'windows',
 		0
 	);
 } else {
 	backWindowSprite = createWelcomeSprite(
-		appWidth / 8 + 450 * welcomeScale.windows,
-		Math.max(0, 158 * welcomeScale.windows + appHeight / 12),
+		backX + 450 * welcomeScale.windows,
+		(appHeight / 24) * 3 + backY,
 		wideWindow,
 		'windows',
 		0
 	);
 }
 
+export { leftWindowSprite, backWindowSprite };
 //left
 let snakeTwoSprite = createWelcomeSprite(
 	appWidth / 6 + 50 * welcomeScale.snake2,
@@ -339,6 +371,27 @@ let helloCardSprite = createWelcomeSprite(
 	helloCard,
 	'card'
 );
+if (appWidth > 800) {
+	let hoyaSprite = createWelcomeSprite(
+		appWidth / 1,
+		backY / 2,
+		hoya,
+		'maranta',
+		0
+	);
+	let palmSprite = createWelcomeSprite(
+		appWidth * 1.9 + 50 * welcomeScale.snake2 + 80 * welcomeScale.snake1,
+		appHeight - appHeight * 0.3 - 100 * welcomeScale.snake1,
+		palm,
+		'palms'
+	);
+	let arecaSprite = createWelcomeSprite(
+		appWidth * 3.01 + 50 * welcomeScale.snake2,
+		appHeight - appHeight * 0.3 - 120 * welcomeScale.snake2,
+		areca,
+		'palms'
+	);
+}
 
 //Project view helper code
 
@@ -358,7 +411,29 @@ export let scale = {
 	decor: 0.9,
 	keys: 0.5,
 };
-if (appWidth < 400) {
+if (appHeight < 400) {
+	scale.project = 0.2;
+	scale.plant = 0.15;
+	scale.desk = 0.45;
+	scale.shelf = 0.5;
+	scale.guestbook = 0.35;
+	scale.board = 0.4;
+	scale.book = 0.6;
+	scale.decor = 0.5;
+	scale.table = 0.5;
+	scale.radio = 0.8;
+	scale.keys = scale.coffee = 0.3;
+} else if (appHeight < 500) {
+	scale.project = 0.25;
+	scale.plant = 0.2;
+	scale.desk = 0.45;
+	scale.shelf = scale.board = scale.guestbook = 0.5;
+	scale.book = 0.6;
+	scale.decor = 0.5;
+	scale.table = 0.7;
+	scale.radio = 0.8;
+	scale.keys = scale.coffee = 0.3;
+} else if (appWidth < 400) {
 	scale.project = scale.plant = 0.3;
 	scale.desk = 0.55;
 	scale.shelf = scale.board = scale.guestbook = 0.5;
@@ -382,10 +457,10 @@ if (appWidth < 400) {
 }
 
 //function to create project sprites
-export function createSprite(x, y, texture, type) {
+export function createSprite(x, y, texture, type, anchor = 0.5) {
 	const sprite = new Sprite(texture);
 	app.stage.addChild(sprite);
-	sprite.anchor.set(0.5);
+	sprite.anchor.set(0.5, anchor);
 	sprite.position.x = x;
 	sprite.position.y = y;
 	if (type === 'desk') {
@@ -425,18 +500,12 @@ const chaiTexture = PIXI.Texture.from('/siteAssets/chaiNoon.png');
 const barkTexture = PIXI.Texture.from('/siteAssets/gobARk.png');
 const promiseTexture = PIXI.Texture.from('siteAssets/promiseHSLT.png');
 
-let desk = createSprite(
-	(appWidth / 2) * 3,
-	(appHeight / 4) * 2.4,
-	deskTexture,
-	'desk'
-);
-
 export let chai = createSprite(
 	Math.min((appWidth / 2) * 2.6, (appWidth / 2) * 3 - 400 * scale.project),
-	appHeight / 3,
+	backY + (appHeight * 3) / 23,
 	chaiTexture,
-	'project'
+	'project',
+	0
 );
 chai.on('pointerover', () => (chai.tint = 0xfffff9));
 chai.on('pointerout', () => (chai.tint = 0xffffff));
@@ -455,9 +524,10 @@ chai.on('tap', () => {
 
 export let gobARk = createSprite(
 	(appWidth / 4) * 6,
-	appHeight / 4,
+	backY + (appHeight * 3) / 24,
 	barkTexture,
-	'project'
+	'project',
+	0
 );
 gobARk.on('pointerover', () => (gobARk.tint = 0xfffff9));
 gobARk.on('pointerout', () => (gobARk.tint = 0xffffff));
@@ -495,6 +565,12 @@ promiseHS.on('tap', () => {
 	projects.forEach((project) => (project.interactive = false));
 	app.stage.pivot.x = appWidth;
 });
+let desk = createSprite(
+	(appWidth / 2) * 3,
+	(appHeight / 4) * 2.4,
+	deskTexture,
+	'desk'
+);
 
 /****** About Me room *******/
 
@@ -641,24 +717,26 @@ stagg.on('pointertap', () => {
 /* socials links */
 let socialsText = PIXI.Texture.from('/siteAssets/socials-board-nk.png');
 let chalkboard = createSprite(
-	(appWidth / 2) * 7,
-	appHeight / 3,
+	(appWidth / 2) * 6.6,
+	backY + (appHeight * 3) / 24,
 	socialsText,
-	'board'
+	'board',
+	0
 );
-let stayInTouch = new PIXI.Text('Stay in Touch!', {
+let stayInTouch = new PIXI.Text('Contact me:', {
 	fill: ['#ffffff', '#f4f5e7'],
 });
-stayInTouch.position.x = (appWidth / 2) * 7 - 165 * scale.board;
-stayInTouch.y = appHeight / 3 - 50 * scale.board;
-stayInTouch.angle = -15;
+stayInTouch.position.x = (appWidth / 2) * 6.6 - 165 * scale.board;
+stayInTouch.y = backY + (appHeight * 3) / 24 + 70 * scale.board;
+stayInTouch.angle = -10;
 app.stage.addChild(stayInTouch);
 let gitText = PIXI.Texture.from('/siteAssets/github-key.png');
 let github = createSprite(
-	(appWidth / 2) * 7 - 165 * scale.board,
-	appHeight / 3 + 110 * scale.board - 40 * scale.keys,
+	(appWidth / 2) * 6.6 - 165 * scale.board,
+	backY + (appHeight * 3) / 24 + 200 * scale.board,
 	gitText,
-	'keys'
+	'keys',
+	0
 );
 github.on('pointerover', () => (github.tint = 0xfffff9));
 github.on('pointerout', () => (github.tint = 0xffffff));
@@ -669,10 +747,11 @@ github.on('pointertap', () => {
 
 let codeText = PIXI.Texture.from('/siteAssets/codepen-key.png');
 let codepen = createSprite(
-	(appWidth / 2) * 7 + 165 * scale.board,
-	appHeight / 3 + 110 * scale.board - 40 * scale.keys,
+	(appWidth / 2) * 6.6 + 165 * scale.board,
+	backY + (appHeight * 3) / 24 + 200 * scale.board,
 	codeText,
-	'keys'
+	'keys',
+	0
 );
 codepen.on('pointerover', () => (codepen.tint = 0xfffff9));
 codepen.on('pointerout', () => (codepen.tint = 0xffffff));
@@ -683,10 +762,11 @@ codepen.on('pointertap', () => {
 
 let linkText = PIXI.Texture.from('/siteAssets/linkedin-key.png');
 let linkedin = createSprite(
-	(appWidth / 2) * 7,
-	appHeight / 3 + 110 * scale.board - 40 * scale.keys,
+	(appWidth / 2) * 6.6,
+	backY + (appHeight * 3) / 24 + 200 * scale.board,
 	linkText,
-	'keys'
+	'keys',
+	0
 );
 linkedin.on('pointerover', () => (linkedin.tint = 0xfffff9));
 linkedin.on('pointerout', () => (linkedin.tint = 0xffffff));
@@ -697,7 +777,7 @@ linkedin.on('pointertap', () => {
 
 /* radio and plant */
 export let secondMonstera = createSprite(
-	(appWidth / 2) * 7.5,
+	(appWidth / 2) * 7.3,
 	(appHeight / 4) * 2.4,
 	monstera,
 	'decor'
@@ -707,15 +787,15 @@ export let secondMonstera = createSprite(
 
 let tableText = PIXI.Texture.from('/siteAssets/tableLT.png');
 let table = createSprite(
-	(appWidth / 2) * 6.7,
+	(appWidth / 2) * 6.2,
 	(appHeight / 4) * 3,
 	tableText,
 	'table'
 );
 let gbookText = PIXI.Texture.from('/siteAssets/guestbookColor.png');
 let guestbook = createSprite(
-	(appWidth / 2) * 6.75,
-	(appHeight / 4) * 3 - 180 * scale.table + 70 * scale.guestbook,
+	(appWidth / 2) * 6.2 - 60 * scale.table,
+	(appHeight / 4) * 3 - 200 * scale.table + 70 * scale.guestbook,
 	gbookText,
 	'guestbook'
 );
@@ -739,3 +819,6 @@ app.stage.addChild(spotifyPixi);
 
 export let findMeDiv = new PIXI.Container();
 app.stage.addChild(findMeDiv);
+export const menuContainer = new PIXI.Container();
+
+app.stage.addChild(menuContainer);
