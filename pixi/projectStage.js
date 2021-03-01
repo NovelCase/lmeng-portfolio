@@ -443,12 +443,10 @@ export function createSprite(x, y, texture, type, anchor = 0.5) {
 		sprite.on('pointerover', () => {
 			sprite.rotation = 0.05;
 			sprite.scale.set(scale[`${type}`] + 0.03);
-			sprite.tint(0xfffff9);
 		});
 		sprite.on('pointerout', () => {
 			sprite.rotation = 0;
 			sprite.scale.set(scale[`${type}`]);
-			sprite.tint(0xffffff);
 		});
 		sprite.on('resize', () => {
 			sprite.scale.set(scale[`${type}`]);
