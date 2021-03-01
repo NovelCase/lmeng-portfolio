@@ -64,6 +64,7 @@ export default class Menu extends React.Component {
 			<div>
 				{this.state.visible ? (
 					<div className="menu">
+						<img src="/siteAssets/hamburger.png" />
 						<h1
 							onClick={() => {
 								PixiApp.app.stage.pivot.x = 0;
@@ -105,7 +106,10 @@ export default class Menu extends React.Component {
 						</h1>
 					</div>
 				) : (
-					<div />
+					<div className="menu">
+						<img src="/siteAssets/hamburger.png" />
+						test
+					</div>
 				)}
 			</div>
 		);

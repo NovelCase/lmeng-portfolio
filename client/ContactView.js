@@ -52,7 +52,7 @@ export default class Contact extends React.Component {
 						allow="encrypted-media"
 					></iframe>
 				) : (
-					<>test</>
+					<></>
 				)}
 			</div>
 		);

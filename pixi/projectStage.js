@@ -1,4 +1,4 @@
-const { Sprite, SCALE_MODES } = require('pixi.js');
+const { Sprite } = require('pixi.js');
 const PIXI = require('pixi.js');
 const Project = require('../client/ProjectView');
 var _ = require('lodash');
@@ -28,8 +28,8 @@ app.renderer.backgroundColor = 0x9cc4cb;
 let pixiDiv = document.getElementById('pixi');
 pixiDiv.appendChild(app.view);
 
-export const appWidth = app.renderer.view.width;
-export const appHeight = app.renderer.view.height;
+export const appWidth = window.innerWidth;
+export const appHeight = window.innerHeight;
 
 let left = keyboard('ArrowLeft'),
 	right = keyboard('ArrowRight');
@@ -94,8 +94,27 @@ function keyboard(value) {
 		} else app.stage.pivot.x += event.deltaY * 1.2 || event.deltaX * 1.2;
 		menuContainer.position.x = app.stage.pivot.x + 20;
 	};
-	function onWindowResize() {
-		app.renderer.setSize(window.innerWidth, window.innerHeight);
+	/* resize - web resposive */
+	window.addEventListener('resize', resize);
+	function resize() {
+		let widthDiff = window.innerWidth - app.renderer.view.width;
+		let heightDiff = window.innerHeight - app.renderer.view.height;
+		let method = 'add';
+		if (window.innerWidth < app.renderer.view.width) {
+			method = 'subtract';
+			widthDiff = app.renderer.view.width - window.innerWidth;
+			heightDiff = app.renderer.view.height - window.innerHeight;
+		}
+		app.renderer.resize(window.innerWidth, window.innerHeight);
+		app.stage.children.forEach((child, idx) => {
+			if (method === 'add') {
+				child.width += widthDiff;
+				child.height += heightDiff;
+			} else {
+				child.width -= widthDiff;
+				child.height -= heightDiff;
+			}
+		});
 	}
 
 	//Attach event listeners
@@ -131,6 +150,7 @@ export let scale = {
 	radio: 1.3,
 	plant: 0.5,
 	board: 0.7,
+	palms: 0.7,
 	guestbook: 0.8,
 	decor: 0.9,
 	keys: 0.5,
@@ -140,19 +160,18 @@ export let scale = {
 	maranta: 0.5,
 	card: 0.85,
 	findMe: 0.5,
-	palms: 0.75,
 };
 if (appHeight < 400) {
 	scale.project = 0.2;
 	scale.plant = 0.15;
 	scale.desk = 0.45;
 	scale.shelf = scale.decor = scale.table = 0.5;
-	scale.guestbook = scale.palms = 0.35;
+	scale.guestbook = 0.35;
 	scale.board = scale.card = scale.snake = scale.monstera = 0.4;
 	scale.book = 0.6;
 	scale.radio = 0.8;
 	scale.keys = scale.windows = scale.coffee = 0.3;
-	scale.maranta = 0.25;
+	scale.maranta = scale.palms = 0.25;
 } else if (appHeight < 500) {
 	scale.project = scale.maranta = 0.25;
 	scale.plant = 0.2;
@@ -162,8 +181,8 @@ if (appHeight < 400) {
 	scale.decor = 0.5;
 	scale.table = 0.7;
 	scale.radio = 0.8;
-	scale.keys = scale.coffee = 0.3;
-	scale.windows = scale.card = scale.snake = scale.monstera = scale.palms = 0.4;
+	scale.keys = scale.coffee = scale.palms = 0.3;
+	scale.windows = scale.card = scale.snake = scale.monstera = 0.4;
 } else if (appWidth < 400) {
 	scale.project = scale.plant = scale.maranta = 0.3;
 	scale.desk = 0.55;
@@ -191,6 +210,14 @@ if (appHeight < 400) {
 	scale.shelf = 1;
 	scale.desk = 1;
 }
+
+/*******Containers***** */
+
+const megaContainer = new PIXI.Container();
+app.stage.addChild(megaContainer);
+const bgContainer = new PIXI.Container();
+megaContainer.addChild(bgContainer);
+
 /****** Background *******/
 let backX;
 let backY;
@@ -206,7 +233,7 @@ ceiling
 	.beginFill(0xf9eee0)
 	.drawRect(0, 0, appWidth * 4, appHeight / 2)
 	.endFill();
-app.stage.addChild(ceiling);
+bgContainer.addChild(ceiling);
 
 export let trim = new PIXI.Graphics();
 trim
@@ -233,7 +260,7 @@ trim
 		appHeight / 12,
 	])
 	.endFill();
-app.stage.addChild(trim);
+bgContainer.addChild(trim);
 let walls = new PIXI.Graphics();
 walls
 	.beginFill(0x9cc4cb)
@@ -258,7 +285,7 @@ walls
 		(appHeight / 24) * 3,
 	])
 	.endFill();
-app.stage.addChild(walls);
+bgContainer.addChild(walls);
 
 let floor = new PIXI.Graphics();
 floor
@@ -284,14 +311,14 @@ floor
 		appHeight - appHeight * 0.3,
 	])
 	.endFill();
-app.stage.addChild(floor);
+bgContainer.addChild(floor);
 
 /****** Welcome room *******/
 
 //for welcome component weather
 
 export let windowWeather = new PIXI.Container();
-app.stage.addChild(windowWeather);
+megaContainer.addChild(windowWeather);
 
 //textures
 const leftWindow = PIXI.Texture.from('/siteAssets/tiltedWindow1.png');
@@ -361,7 +388,7 @@ let marantaSprite = createSprite(
 
 let monsteraShadowSprite = createSprite(
 	120 * scale.monstera,
-	appHeight - 200 * scale.monstera,
+	appHeight - 240 * scale.monstera,
 	monstera,
 	'monstera'
 );
@@ -375,14 +402,14 @@ let helloCardSprite = createSprite(
 if (appWidth > 800) {
 	let hoyaSprite = createSprite(appWidth / 1, backY / 2, hoya, 'maranta', 0);
 	let palmSprite = createSprite(
-		appWidth * 1.9 + 50 * scale.snake + 80 * scale.snake,
-		appHeight - appHeight * 0.3 - 100 * scale.snake,
+		appWidth * 1.9 + 50 * scale.palms + 150 * scale.palms,
+		appHeight - appHeight * 0.3 - 220 * scale.palms,
 		palm,
 		'palms'
 	);
 	let arecaSprite = createSprite(
-		appWidth * 3.01 + 50 * scale.snake,
-		appHeight - appHeight * 0.3 - 120 * scale.snake,
+		appWidth * 2.97 + 50 * scale.palms,
+		appHeight - appHeight * 0.3 - 200 * scale.palms,
 		areca,
 		'palms'
 	);
@@ -393,7 +420,7 @@ if (appWidth > 800) {
 //function to create project sprites
 export function createSprite(x, y, texture, type, anchor = 0.5) {
 	const sprite = new Sprite(texture);
-	app.stage.addChild(sprite);
+	megaContainer.addChild(sprite);
 	sprite.anchor.set(0.5, anchor);
 	sprite.position.x = x;
 	sprite.position.y = y;
@@ -422,6 +449,9 @@ export function createSprite(x, y, texture, type, anchor = 0.5) {
 			sprite.rotation = 0;
 			sprite.scale.set(scale[`${type}`]);
 			sprite.tint(0xffffff);
+		});
+		sprite.on('resize', () => {
+			sprite.scale.set(scale[`${type}`]);
 		});
 	} else {
 		sprite.scale.set(scale[`${type}`]);
@@ -622,13 +652,7 @@ let chalkboard = createSprite(
 	'board',
 	0
 );
-let stayInTouch = new PIXI.Text('Contact me:', {
-	fill: ['#ffffff', '#f4f5e7'],
-});
-stayInTouch.position.x = (appWidth / 2) * 6.6 - 165 * scale.board;
-stayInTouch.y = backY + (appHeight * 3) / 24 + 70 * scale.board;
-stayInTouch.angle = -10;
-app.stage.addChild(stayInTouch);
+
 let gitText = PIXI.Texture.from('/siteAssets/github-key.png');
 let github = createSprite(
 	(appWidth / 2) * 6.6 - 165 * scale.board,
@@ -700,16 +724,16 @@ guestbook.on('pointertap', () => {
 app.ticker.add((delta) => {});
 /* Pop Ups */
 export let popUps = new PIXI.Container();
-app.stage.addChild(popUps);
+megaContainer.addChild(popUps);
 
 export let text = new PIXI.Container();
-app.stage.addChild(text);
+megaContainer.addChild(text);
 
 export let spotifyPixi = new PIXI.Container();
-app.stage.addChild(spotifyPixi);
+megaContainer.addChild(spotifyPixi);
 
 export let findMeDiv = new PIXI.Container();
-app.stage.addChild(findMeDiv);
+megaContainer.addChild(findMeDiv);
 export const menuContainer = new PIXI.Container();
 
-app.stage.addChild(menuContainer);
+megaContainer.addChild(menuContainer);
