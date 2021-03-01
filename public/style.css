@@ -7,17 +7,21 @@ body {
 	height: 100%;
 	overflow: hidden;
 }
-
+.hamburger {
+	position: absolute;
+	top: 10px;
+	left: 25px;
+}
 .menu {
 	position: absolute;
-	top: 4px;
-	left: 0px;
+	top: 15px;
+	left: 15%;
 
 	overflow: auto;
 	white-space: nowrap;
 	color: #a68655;
 	width: 80%;
-	margin: 0 10%;
+	margin: 0 10px;
 }
 .menu > h1 {
 	font-size: 16pt;
@@ -37,5 +41,10 @@ body {
 	}
 	.menu > h1 {
 		font-size: 28pt;
+	}
+	.hamburger {
+		position: absolute;
+		top: 15px;
+		left: 25px;
 	}
 }

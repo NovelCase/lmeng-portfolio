@@ -2,69 +2,56 @@ import React from 'react';
 import * as PixiApp from '../pixi/projectStage';
 import * as PIXI from 'pixi.js';
 
-let width = PixiApp.app.renderer.view.width;
-let height = PixiApp.app.renderer.view.height;
-const hamMenu = PIXI.Texture.from('/siteAssets/hamburger.png');
-const hamHover = PIXI.Texture.from('/siteAssets/hamPurp.png');
-const closedIcon = PIXI.Texture.from('/siteAssets/x-mark.png');
-const closeHover = PIXI.Texture.from('/siteAssets/xPurp.png');
-let menuSprite;
-
+let menu = {
+	ham: '/siteAssets/hamburger.png',
+	hamHover: '/siteAssets/hamPurp.png',
+	closed: '/siteAssets/x-mark.png',
+	closedHover: '/siteAssets/xPurp.png',
+};
 export default class Menu extends React.Component {
 	constructor() {
 		super();
 		this.state = {
 			visible: false,
+			menu: 'ham',
 		};
 		this.onClickTap = this.onClickTap.bind(this);
+		this.onPointerOut = this.onPointerOut.bind(this);
+		this.onPointerOver = this.onPointerOver.bind(this);
 	}
-	componentDidMount() {
-		menuSprite = new PIXI.Sprite(hamMenu);
-		PixiApp.menuContainer.addChild(menuSprite);
-		//menuSprite.anchor.set(0.5);
-		menuSprite.interactive = true;
-		menuSprite.buttonMode = true;
-		if (window.outerWidth <= 400) {
-			menuSprite.scale.set(0.9);
-		} else menuSprite.scale.set(1.1);
-		menuSprite.position.y = 20;
-		menuSprite.position.x = 20;
-
-		menuSprite.on('pointertap', () => {
-			this.onClickTap();
-		});
-		menuSprite.on('pointerover', function () {
-			if (this.texture === hamMenu) {
-				this.texture = hamHover;
-			} else {
-				this.texture = closeHover;
-			}
-		});
-		menuSprite.on('pointerout', function () {
-			if (this.texture === hamHover || this.texture === hamMenu) {
-				this.texture = hamMenu;
-			} else {
-				this.texture = closedIcon;
-			}
-		});
+	componentDidMount() {}
+	onPointerOver() {
+		let newImg = this.state.menu + 'Hover';
+		this.setState({ ...this.state, menu: newImg });
 	}
-
+	onPointerOut() {
+		if (this.state.menu === 'closedHover')
+			this.setState({ ...this.state, menu: 'closed' });
+		else if (this.state.menu === 'hamHover')
+			this.setState({ ...this.state, menu: 'ham' });
+	}
 	onClickTap() {
 		if (this.state.visible) {
-			this.setState({ visible: false });
-			menuSprite.texture = hamMenu;
+			this.setState({ menu: 'ham', visible: false });
+			// menuSprite.texture = hamMenu;
 		} else {
-			this.setState({ visible: true });
-			menuSprite.texture = closedIcon;
+			this.setState({ menu: 'closed', visible: true });
+			// menuSprite.texture = closedIcon;
 		}
 	}
 
 	render() {
 		return (
 			<div>
+				<img
+					className="hamburger"
+					onPointerOver={this.onPointerOver}
+					onPointerOut={this.onPointerOut}
+					onClick={this.onClickTap}
+					src={menu[this.state.menu]}
+				/>
 				{this.state.visible ? (
 					<div className="menu">
-						<img src="/siteAssets/hamburger.png" />
 						<h1
 							onClick={() => {
 								PixiApp.app.stage.pivot.x = 0;
@@ -106,10 +93,7 @@ export default class Menu extends React.Component {
 						</h1>
 					</div>
 				) : (
-					<div className="menu">
-						<img src="/siteAssets/hamburger.png" />
-						test
-					</div>
+					<></>
 				)}
 			</div>
 		);
