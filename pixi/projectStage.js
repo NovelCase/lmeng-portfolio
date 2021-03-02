@@ -1,7 +1,8 @@
 const { Sprite } = require('pixi.js');
 const PIXI = require('pixi.js');
-const Project = require('../client/ProjectView');
 var _ = require('lodash');
+const { data } = require('../data');
+const { Scrollbox } = require('pixi-scrollbox');
 
 window.WebFontConfig = {
 	google: {
@@ -92,7 +93,6 @@ function keyboard(value) {
 		) {
 			app.stage.pivot.x = appWidth * 3;
 		} else app.stage.pivot.x += event.deltaY * 1.2 || event.deltaX * 1.2;
-		menuContainer.position.x = app.stage.pivot.x + 20;
 	};
 	/* resize - web resposive */
 	window.addEventListener('resize', resize);
@@ -313,6 +313,139 @@ floor
 	.endFill();
 bgContainer.addChild(floor);
 
+// popup logic
+
+let scrollbox;
+let popUpProject = new PIXI.Container();
+
+/* Styling */
+let titleStyle = {
+	fontFamily: 'Montserrat',
+	fontSize: 35,
+	fontWeight: '600',
+	wordWrap: true,
+	lineHeight: 50,
+	wordWrapWidth: Math.max(app.renderer.view.width / 2.5, 300),
+};
+let descriptionStyle = {
+	fontFamily: 'Montserrat',
+	fontSize: 23,
+	fontWeight: '400',
+	lineHeight: 50,
+	wordWrap: true,
+	wordWrapWidth: Math.max(app.renderer.view.width / 2.5, 300),
+};
+let linkStyle = {
+	fontFamily: 'Montserrat',
+	fontSize: 23,
+	fill: '#007EC7',
+};
+function createPopUpRect(title) {
+	popUpProject.removeChildren();
+	let x = app.stage.pivot.x + app.renderer.view.width / 4;
+	let y = app.renderer.view.height / 4;
+	let width = window.outerWidth / 2;
+	let height = app.renderer.view.height / 2;
+
+	if (window.outerWidth < 400) {
+		x = Math.floor(app.stage.pivot.x / window.innerWidth) * window.innerWidth;
+		y = app.renderer.view.height / 8;
+		width = window.outerWidth;
+		height = app.renderer.view.height * 0.75;
+	}
+	const rect = new PIXI.Graphics();
+	rect.beginFill(0xf4f5e7).drawRoundedRect(x, y, width, height, 20).endFill();
+	rect.visible = true;
+
+	const redXTexture = PIXI.Texture.from('/siteAssets/x-mark.png');
+	const closeButton = new PIXI.Sprite(redXTexture);
+	closeButton.position.x = x + 2;
+	closeButton.position.y = y + 2;
+	closeButton.visible = true;
+	closeButton.interactive = true;
+	closeButton.buttonMode = true;
+	closeButton.on('pointertap', function () {
+		app.stage.pivot.x =
+			Math.floor(app.stage.pivot.x / window.innerWidth) * window.innerWidth;
+		popUpProject.removeChildren();
+		popUpProject.visible = true;
+	});
+	popUpProject.addChild(rect);
+	popUpProject.addChild(closeButton);
+	let popTitle = createText(
+		data[title].name,
+		titleStyle,
+		x + width / 10,
+		y + 50,
+		false,
+		'title'
+	);
+	scrollbox = popUpProject.addChild(
+		new Scrollbox({
+			boxWidth: (rect.width / 11) * 10 - 20,
+			boxHeight: rect.height - 210,
+		})
+	);
+	let projectDetails = scrollbox.content.addChild(new PIXI.Graphics());
+	projectDetails
+		.beginFill(0xf4f5e7, 0.25)
+		.drawRect(0, 0, (rect.width / 11) * 9, rect.height - 210)
+		.endFill();
+	scrollbox.position.set(x + rect.width / 10, y + 160);
+
+	let popDesc = createText(
+		data[title].description,
+		descriptionStyle,
+		0,
+		0,
+		false,
+		'description'
+	);
+	scrollbox.update();
+	if (data[title].linkOne) {
+		let popLinkOne = createText(
+			data[title].linkOne,
+			linkStyle,
+			x + rect.width / 6,
+			y + rect.height - 50,
+			true,
+			'projectGithub'
+		);
+		popLinkOne.on('pointertap', () => openLink(title, 'One'));
+	}
+	if (data[title].linkTwo) {
+		let popLinkTwo = createText(
+			data[title].linkTwo,
+			linkStyle,
+			x + (rect.width / 6) * 5,
+			y + rect.height - 50,
+			true,
+			'projectLive'
+		);
+		popLinkTwo.on('pointertap', () => openLink(title, 'Two'));
+	}
+	return popUpProject;
+}
+
+function openLink(projectName, linkType) {
+	linkType = 'link' + linkType + 'Url';
+	window.open(`${data[projectName][linkType]}`);
+}
+
+function createText(words, style, x, y, interactive, type) {
+	const text = new PIXI.Text(words, style);
+	if (type === 'projectLive') text.anchor.set(1, 0);
+	text.visible = true;
+	text.position.x = x;
+	text.position.y = y;
+	if (interactive) {
+		text.interactive = true;
+		text.buttonMode = true;
+	}
+	if (type !== 'description') popUpProject.addChild(text);
+	else scrollbox.content.addChild(text);
+	return text;
+}
 /****** Welcome room *******/
 
 //for welcome component weather
@@ -397,7 +530,9 @@ let helloCardSprite = createSprite(
 	appWidth / 1.4,
 	appHeight / 1.4,
 	helloCard,
-	'card'
+	'card',
+	0.5,
+	'helloCard'
 );
 if (appWidth > 800) {
 	let hoyaSprite = createSprite(appWidth / 1, backY / 2, hoya, 'maranta', 0);
@@ -418,7 +553,7 @@ if (appWidth > 800) {
 //Project view helper code
 
 //function to create project sprites
-export function createSprite(x, y, texture, type, anchor = 0.5) {
+export function createSprite(x, y, texture, type, anchor = 0.5, name) {
 	const sprite = new Sprite(texture);
 	megaContainer.addChild(sprite);
 	sprite.anchor.set(0.5, anchor);
@@ -435,6 +570,7 @@ export function createSprite(x, y, texture, type, anchor = 0.5) {
 			'radio',
 			'keys',
 			'guestbook',
+			'card',
 		].includes(type)
 	) {
 		sprite.scale.set(scale[`${type}`]);
@@ -451,6 +587,12 @@ export function createSprite(x, y, texture, type, anchor = 0.5) {
 		sprite.on('resize', () => {
 			sprite.scale.set(scale[`${type}`]);
 		});
+		sprite.on('pointertap', function () {
+			app.stage.pivot.x =
+				Math.floor(sprite.position.x / window.innerWidth) * window.innerWidth;
+			console.log(name, 'hi', data[name]);
+			createPopUpRect(name);
+		});
 	} else {
 		sprite.scale.set(scale[`${type}`]);
 	}
@@ -464,47 +606,32 @@ const chaiTexture = PIXI.Texture.from('/siteAssets/chaiNoon.png');
 const barkTexture = PIXI.Texture.from('/siteAssets/gobARk.png');
 const promiseTexture = PIXI.Texture.from('siteAssets/promiseHSLT.png');
 
-export let chai = createSprite(
+let chai = createSprite(
 	Math.min((appWidth / 2) * 2.6, (appWidth / 2) * 3 - 400 * scale.project),
 	backY + (appHeight * 3) / 23,
 	chaiTexture,
 	'project',
-	0
+	0,
+	'chai'
 );
-chai.on('pointertap', () => {
-	let projects = [promiseHS, gobARk];
-	Project.onClick('project', 'chai', projects);
-	projects.forEach((project) => (project.interactive = false));
-	app.stage.pivot.x = appWidth;
-});
 
-export let gobARk = createSprite(
+let gobARk = createSprite(
 	(appWidth / 4) * 6,
 	backY + (appHeight * 3) / 24,
 	barkTexture,
 	'project',
-	0
+	0,
+	'gobARk'
 );
-gobARk.on('pointertap', () => {
-	let projects = [promiseHS, chai];
-	Project.onClick('project', 'gobARk', projects);
-	projects.forEach((project) => (project.interactive = false));
-	app.stage.pivot.x = appWidth;
-});
 
-export let promiseHS = createSprite(
+let promiseHS = createSprite(
 	Math.max((appWidth / 2) * 3.4, (appWidth / 2) * 3 + 500 * scale.project),
 	appHeight / 3,
 	promiseTexture,
-	'project'
+	'project',
+	0.5,
+	'promiseHS'
 );
-
-promiseHS.on('pointertap', () => {
-	let projects = [gobARk, chai];
-	Project.onClick('project', 'promise', projects);
-	projects.forEach((project) => (project.interactive = false));
-	app.stage.pivot.x = appWidth;
-});
 
 let desk = createSprite(
 	(appWidth / 2) * 3,
@@ -533,75 +660,55 @@ let rightShelf = createSprite(
 
 /* Left Shelf */
 let bfaText = PIXI.Texture.from('/siteAssets/bfa-book.png');
-export let bfa = createSprite(
+let bfa = createSprite(
 	(appWidth / 4) * 9.3 + scale.book / 2,
 	appHeight / 3,
 	bfaText,
-	'book'
+	'book',
+	0.5,
+	'bfa'
 );
-bfa.on('pointertap', () => {
-	let items = [convo, blueOcean, krimson, goat, stagg];
-	Project.onClick('about', 'bfa', items);
-	items.forEach((item) => (item.interactive = false));
-	app.stage.pivot.x = 2 * appWidth;
-});
 
-let convoText = PIXI.Texture.from('/siteAssets/convowfear.png');
-export let convo = createSprite(
+let whitebook = PIXI.Texture.from('/siteAssets/whitebook.png');
+let webtoons = createSprite(
 	(appWidth / 4) * 9.35 + scale.book / 2,
 	appHeight / 3 - 10 * scale.book,
-	convoText,
-	'book'
+	whitebook,
+	'book',
+	0.5,
+	'webtoons'
 );
-convo.on('pointertap', () => {
-	let items = [bfa, blueOcean, presence, krimson, goat, stagg];
-	Project.onClick('about', 'convo', items);
-	items.forEach((item) => (item.interactive = false));
-	app.stage.pivot.x = 2 * appWidth;
-});
 
 let blueText = PIXI.Texture.from('/siteAssets/blue-book.png');
-export let blueOcean = createSprite(
+let blueOcean = createSprite(
 	(appWidth / 4) * 9.35 + scale.book / 2 + 5,
 	appHeight / 3 - 25 * scale.book,
 	blueText,
-	'book'
+	'book',
+	0.5,
+	'blueOcean'
 );
-blueOcean.on('pointertap', () => {
-	let items = [bfa, convo, presence, krimson, goat, stagg];
-	Project.onClick('about', 'blueOcean', items);
-	items.forEach((item) => (item.interactive = false));
-	app.stage.pivot.x = 2 * appWidth;
-});
 
 /* Right Shelf */
-let presText = PIXI.Texture.from('/siteAssets/vertbook.png');
-export let presence = createSprite(
+let vertbook = PIXI.Texture.from('/siteAssets/vertbook.png');
+export let webnovels = createSprite(
 	(appWidth / 4) * 10.8 - scale.book / 2 - 90 * scale.shelf,
 	(appHeight / 5) * 2 - 40 * scale.book,
-	presText,
-	'book'
+	vertbook,
+	'book',
+	0.5,
+	'webnovel'
 );
-presence.on('pointertap', () => {
-	let items = [bfa, convo, blueOcean, krimson, goat, stagg];
-	Project.onClick('about', 'presence', items);
-	items.forEach((item) => (item.interactive = false));
-	app.stage.pivot.x = 2 * appWidth;
-});
 
 let krimTexture = PIXI.Texture.from('/siteAssets/krimson-queen.png');
-export let krimson = createSprite(
+let krimson = createSprite(
 	(appWidth / 4) * 10.9 - scale.book / 2,
 	(appHeight / 5) * 2 - 100 * scale.plant,
 	krimTexture,
-	'plant'
+	'plant',
+	0.5,
+	'plants'
 );
-krimson.on('pointertap', () => {
-	let items = [bfa, convo, blueOcean, presence, goat, stagg];
-	Project.onClick('about', 'krimson', items);
-	items.forEach((item) => (item.interactive = false));
-	app.stage.pivot.x = 2 * appWidth;
-});
 
 let sideTab = PIXI.Texture.from('/siteAssets/sideboardLT.png');
 let sideboard = createSprite(
@@ -616,28 +723,20 @@ let goat = createSprite(
 	(appWidth / 2) * 5 - scale.coffee * 140,
 	(appHeight / 4) * 2.6 - scale.coffee * 260,
 	goatText,
+	'coffee',
+	0.5,
 	'coffee'
 );
-goat.on('pointertap', () => {
-	let items = [bfa, convo, blueOcean, presence, krimson, stagg];
-	Project.onClick('about', 'goat', items);
-	items.forEach((item) => (item.interactive = false));
-	app.stage.pivot.x = 2 * appWidth;
-});
 
 let felText = PIXI.Texture.from('/siteAssets/stagg.png');
 let stagg = createSprite(
 	(appWidth / 2) * 5 + scale.coffee * 150,
 	(appHeight / 4) * 2.6 - scale.coffee * 200,
 	felText,
-	'coffee'
+	'coffee',
+	0.5,
+	'tea'
 );
-stagg.on('pointertap', () => {
-	let items = [bfa, convo, blueOcean, presence, krimson, goat];
-	Project.onClick('about', 'stagg', items);
-	items.forEach((item) => (item.interactive = false));
-	app.stage.pivot.x = 2 * appWidth;
-});
 
 /**********    Contact Me    *************/
 
@@ -720,9 +819,6 @@ guestbook.on('pointertap', () => {
 	app.stage.pivot.x = 3 * appWidth;
 });
 app.ticker.add((delta) => {});
-/* Pop Ups */
-export let popUps = new PIXI.Container();
-megaContainer.addChild(popUps);
 
 export let text = new PIXI.Container();
 megaContainer.addChild(text);
@@ -732,6 +828,4 @@ megaContainer.addChild(spotifyPixi);
 
 export let findMeDiv = new PIXI.Container();
 megaContainer.addChild(findMeDiv);
-export const menuContainer = new PIXI.Container();
-
-megaContainer.addChild(menuContainer);
+megaContainer.addChild(popUpProject);

@@ -55,7 +55,6 @@ export default class Menu extends React.Component {
 						<h1
 							onClick={() => {
 								PixiApp.app.stage.pivot.x = 0;
-								PixiApp.menuContainer.position.x = 20;
 								this.onClickTap();
 							}}
 						>
@@ -64,8 +63,6 @@ export default class Menu extends React.Component {
 						<h1
 							onClick={() => {
 								PixiApp.app.stage.pivot.x = PixiApp.app.renderer.view.width;
-								PixiApp.menuContainer.position.x =
-									PixiApp.app.renderer.view.width + 20;
 								this.onClickTap();
 							}}
 						>
@@ -74,8 +71,6 @@ export default class Menu extends React.Component {
 						<h1
 							onClick={() => {
 								PixiApp.app.stage.pivot.x = PixiApp.app.renderer.view.width * 2;
-								PixiApp.menuContainer.position.x =
-									PixiApp.app.renderer.view.width * 2 + 20;
 								this.onClickTap();
 							}}
 						>
@@ -84,8 +79,6 @@ export default class Menu extends React.Component {
 						<h1
 							onClick={() => {
 								PixiApp.app.stage.pivot.x = PixiApp.app.renderer.view.width * 3;
-								PixiApp.menuContainer.position.x =
-									PixiApp.app.renderer.view.width * 3 + 20;
 								this.onClickTap();
 							}}
 						>

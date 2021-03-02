@@ -9,22 +9,15 @@ export default class Welcome extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			//SF data for testing purposes
-			// lat: 37.77,
-			// lng: -122.42,
-			//NY data
-			// lat: 40.75,
-			// lng: -73.98,
-			//florida data
 			weatherColor: 0,
-			//for testing- change to Manhattan
-			city: 'Miami',
-			lat: 27.66,
-			lng: -81.51,
+			city: 'Manhattan',
+			lat: 40.78,
+			lng: 73.97,
 			data: {},
 			time: new Date(),
 			findMe: false,
 			mouseover: false,
+			loading: true,
 		};
 		this.calculateTemp = this.calculateTemp.bind(this);
 		this.findMe = this.findMe.bind(this);
@@ -41,7 +34,6 @@ export default class Welcome extends React.Component {
 			);
 			const data = await api_call.json();
 			this.setState({ data });
-			console.log('weather: ', this.state.data);
 			this.chooseWeatherColor(
 				this.calculateTemp(this.state.data.main.temp),
 				this.state.data.weather[0].description,
@@ -54,15 +46,11 @@ export default class Welcome extends React.Component {
 		//creating window colors
 		weatherWindow = new PIXI.Graphics();
 		//available if needed for addt'l responsive design / scaling
-		let width = PixiApp.appWidth;
-		let height = PixiApp.appHeight;
 		let backWindow = PixiApp.backWindowSprite;
 		let backWindowWidth = PixiApp.backWindowSprite.width;
 		let backWindowHeight = PixiApp.backWindowSprite.height;
 		//available if needed for addt'l responsive design / scaling
 		let leftWindowHeight = PixiApp.leftWindowSprite.height;
-		let backWindowX = PixiApp.backWindowSprite.position.x;
-		let backWindowY = PixiApp.backWindowSprite.position.y;
 		let leftWindowSprite = PixiApp.leftWindowSprite;
 
 		//back window
@@ -182,6 +170,8 @@ export default class Welcome extends React.Component {
 		});
 
 		PixiApp.findMeDiv.addChild(findMeSprite);
+		if (leftWindowHeight && backWindowHeight)
+			this.setState({ ...this.state, loading: false });
 	}
 
 	async findMe() {
@@ -195,7 +185,6 @@ export default class Welcome extends React.Component {
 				);
 				const data = await api_call.json();
 				this.setState({ data });
-				console.log('weather: ', this.state.data);
 				this.chooseWeatherColor(
 					this.calculateTemp(this.state.data.main.temp),
 					this.state.data.weather[0].description,
@@ -212,18 +201,18 @@ export default class Welcome extends React.Component {
 	//just to change color of windows
 	componentDidUpdate(prevState) {
 		//creating window colors
-		if (prevState.weatherColor !== this.state.weatherColor) {
+		if (
+			prevState.weatherColor !== this.state.weatherColor ||
+			prevState.loading
+		) {
 			weatherWindow = new PIXI.Graphics();
 			//available if needed for addt'l responsive design / scaling
-			let width = PixiApp.appWidth;
-			let height = PixiApp.appHeight;
 			let backWindow = PixiApp.backWindowSprite;
 			let backWindowWidth = PixiApp.backWindowSprite.width;
 			let backWindowHeight = PixiApp.backWindowSprite.height;
 			//available if needed for addt'l responsive design / scaling
 			let leftWindowHeight = PixiApp.leftWindowSprite.height;
 			let backWindowX = PixiApp.backWindowSprite.position.x;
-			let backWindowY = PixiApp.backWindowSprite.position.y;
 			let leftWindowSprite = PixiApp.leftWindowSprite;
 
 			//back window
@@ -243,8 +232,6 @@ export default class Welcome extends React.Component {
 			PixiApp.windowWeather.removeChild(sideWeatherWindow);
 
 			//dependent on left window position and back window dimensions
-			console.log(leftWindowHeight);
-
 			sideWeatherWindow = new PIXI.Graphics();
 			sideWeatherWindow
 				.beginFill(this.state.weatherColor)
@@ -357,7 +344,6 @@ export default class Welcome extends React.Component {
 		b = this.componentToHex(b);
 		//translate rgb string to hex
 		let rgbHex = this.rgbToHex(r, g, b);
-		console.log('rgb: ', rgbHex);
 		//set weather on state
 		this.setState({ weatherColor: rgbHex });
 	}

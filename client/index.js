@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import '../public/style.css';
-// import * as PixiApp from '../pixi/app.js';
-import Project from './ProjectView';
 import Welcome from './WelcomeView';
 import Contact from './ContactView';
 import Menu from './Menu';
@@ -13,7 +11,6 @@ require('babel-polyfill');
 ReactDOM.render(
 	<div>
 		<Menu />
-		<Project />
 		<Welcome />
 		<Contact />
 	</div>,
