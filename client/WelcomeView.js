@@ -17,7 +17,6 @@ export default class Welcome extends React.Component {
 			time: new Date(),
 			findMe: false,
 			mouseover: false,
-			loading: true,
 		};
 		this.calculateTemp = this.calculateTemp.bind(this);
 		this.findMe = this.findMe.bind(this);
@@ -67,7 +66,17 @@ export default class Welcome extends React.Component {
 				backWindowHeight * 0.85
 			)
 			.endFill();
-
+		weatherWindow.interactive = true;
+		weatherWindow.on('pointerover', () => (weatherWindow.tint = 0x007ec7));
+		weatherWindow.on('pointerout', () => (weatherWindow.tint = 0xffffff));
+		weatherWindow.on('pointertap', () => {
+			let find = confirm('Change weather to local weather?');
+			if (find) {
+				alert('Updated weather!');
+				this.findMe();
+			}
+			PixiApp.app.stage.pivot.x = 0;
+		});
 		PixiApp.windowWeather.addChild(weatherWindow);
 
 		sideWeatherWindow = new PIXI.Graphics();
@@ -99,6 +108,23 @@ export default class Welcome extends React.Component {
 				leftWindowSprite.position.y - leftWindowHeight * 0.25,
 			])
 			.endFill();
+		sideWeatherWindow.interactive = true;
+		sideWeatherWindow.on(
+			'pointerover',
+			() => (sideWeatherWindow.tint = 0x007ec7)
+		);
+		sideWeatherWindow.on(
+			'pointerout',
+			() => (sideWeatherWindow.tint = 0xffffff)
+		);
+		sideWeatherWindow.on('pointertap', () => {
+			let find = confirm('Change weather to local weather?');
+			if (find) {
+				alert('Updated weather!');
+				this.findMe();
+			}
+			PixiApp.app.stage.pivot.x = 0;
+		});
 		PixiApp.windowWeather.addChild(sideWeatherWindow);
 		let light = new PIXI.Graphics();
 		light
@@ -127,7 +153,7 @@ export default class Welcome extends React.Component {
 				leftWindowSprite.position.y - leftWindowHeight * 0.25,
 			])
 			.endFill();
-		PixiApp.app.stage.addChild(light);
+		PixiApp.windowWeather.addChild(light);
 		let lightTwo = new PIXI.Graphics();
 		lightTwo
 			.beginFill(0xf4f5e7, 0.1)
@@ -154,24 +180,27 @@ export default class Welcome extends React.Component {
 				// connect
 			])
 			.endFill();
-		PixiApp.app.stage.addChild(lightTwo);
-		const findMeDiv = PIXI.Texture.from('/siteAssets/findMeDiv.png');
-		let findMeSprite = new PIXI.Sprite(findMeDiv);
-		findMeSprite.position.x = backWindow.position.x + backWindow.width / 1.3;
-		findMeSprite.position.y = backWindow.position.y;
-		findMeSprite.anchor.set(0.5);
-		findMeSprite.interactive = true;
-		findMeSprite.buttonMode = true;
-		findMeSprite.on('pointerover', () => (findMeSprite.tint = 0x007ec7));
-		findMeSprite.on('pointerout', () => (findMeSprite.tint = 0xffffff));
-		findMeSprite.on('pointertap', () => {
-			this.findMe();
-			PixiApp.app.stage.pivot.x = 0;
-		});
+		PixiApp.windowWeather.addChild(lightTwo);
+		// const findMeDiv = new PIXI.Graphics();
+		// let findMeSprite = new PIXI.Graphics();
+		// findMeSprite.beginFill(this.state.weathercolor)
+		// findMeSprite.position.x = backWindow.position.x + backWindow.width / 1.3;
+		// findMeSprite.position.y = backWindow.position.y;
+		// findMeSprite.anchor.set(0.5);
+		// findMeSprite.interactive = true;
+		// findMeSprite.buttonMode = true;
+		// findMeSprite.on('pointerover', () => (findMeSprite.tint = 0x007ec7));
+		// findMeSprite.on('pointerout', () => (findMeSprite.tint = 0xffffff));
+		// findMeSprite.on('pointertap', () => {
+		// 	let find = confirm('Change weather to local weather?');
+		// 	if (find) {
+		// 		alert('Updated weather!');
+		// 		this.findMe();
+		// 	}
+		// 	PixiApp.app.stage.pivot.x = 0;
+		// });
 
-		PixiApp.findMeDiv.addChild(findMeSprite);
-		if (leftWindowHeight && backWindowHeight)
-			this.setState({ ...this.state, loading: false });
+		// PixiApp.findMeDiv.addChild(findMeSprite);
 	}
 
 	async findMe() {
@@ -201,10 +230,7 @@ export default class Welcome extends React.Component {
 	//just to change color of windows
 	componentDidUpdate(prevState) {
 		//creating window colors
-		if (
-			prevState.weatherColor !== this.state.weatherColor ||
-			prevState.loading
-		) {
+		if (prevState.weatherColor !== this.state.weatherColor) {
 			weatherWindow = new PIXI.Graphics();
 			//available if needed for addt'l responsive design / scaling
 			let backWindow = PixiApp.backWindowSprite;

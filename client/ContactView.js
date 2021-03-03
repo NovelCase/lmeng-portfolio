@@ -21,8 +21,6 @@ export default class Contact extends React.Component {
 			radioText,
 			'radio'
 		);
-		radio.on('pointerover', () => (radio.tint = 0xfffff9));
-		radio.on('pointerout', () => (radio.tint = 0xffffff));
 		radio.on('pointertap', () => {
 			this.onClickTap();
 		});

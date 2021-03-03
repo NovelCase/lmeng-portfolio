@@ -4,6 +4,7 @@ var _ = require('lodash');
 const { data } = require('../data');
 const { Scrollbox } = require('pixi-scrollbox');
 
+/** canvas configuration setup */
 window.WebFontConfig = {
 	google: {
 		families: ['Montserrat'],
@@ -25,12 +26,14 @@ export const app = new PIXI.Application({
 	resizeTo: window,
 });
 
-app.renderer.backgroundColor = 0x9cc4cb;
+app.renderer.backgroundColor = 0xa68655;
 let pixiDiv = document.getElementById('pixi');
 pixiDiv.appendChild(app.view);
 
 export const appWidth = window.innerWidth;
 export const appHeight = window.innerHeight;
+
+// all keyboard and event-listeners
 
 let left = keyboard('ArrowLeft'),
 	right = keyboard('ArrowRight');
@@ -41,7 +44,6 @@ left.press = () => {
 		app.stage.pivot.x =
 			Math.floor(app.stage.pivot.x / appWidth) * appWidth - appWidth;
 	} else app.stage.pivot.x = 0;
-	menuContainer.position.x = app.stage.pivot.x + 20;
 };
 
 //Right
@@ -50,7 +52,6 @@ right.press = () => {
 		app.stage.pivot.x =
 			Math.floor(app.stage.pivot.x / appWidth) * appWidth + appWidth;
 	} else app.stage.pivot.x = 3 * appWidth;
-	menuContainer.position.x = app.stage.pivot.x + 20;
 };
 
 function keyboard(value) {
@@ -115,6 +116,7 @@ function keyboard(value) {
 				child.height -= heightDiff;
 			}
 		});
+		popUpProject.removeChildren();
 	}
 
 	//Attach event listeners
@@ -160,6 +162,7 @@ export let scale = {
 	maranta: 0.5,
 	card: 0.85,
 	findMe: 0.5,
+	stack: 1,
 };
 if (appHeight < 400) {
 	scale.project = 0.2;
@@ -276,10 +279,16 @@ walls
 		//extra piece
 
 		0,
-		appHeight / 1.75 + appHeight / 24,
+		Math.min(
+			appHeight,
+			0.7 * appHeight +
+				Math.max(appWidth / 7.66, appWidth / 8 - 100 * scale.windows)
+		),
+		backX,
+		appHeight - appHeight * 0.3,
 		//bottom right
 		appWidth * 4,
-		appHeight / 1.75 + appHeight / 24,
+		appHeight - appHeight * 0.3,
 		//top right corner
 		appWidth * 4,
 		(appHeight / 24) * 3,
@@ -318,42 +327,54 @@ bgContainer.addChild(floor);
 let scrollbox;
 let popUpProject = new PIXI.Container();
 
-/* Styling */
-let titleStyle = {
-	fontFamily: 'Montserrat',
-	fontSize: 35,
-	fontWeight: '600',
-	wordWrap: true,
-	lineHeight: 50,
-	wordWrapWidth: Math.max(app.renderer.view.width / 2.5, 300),
-};
-let descriptionStyle = {
-	fontFamily: 'Montserrat',
-	fontSize: 23,
-	fontWeight: '400',
-	lineHeight: 50,
-	wordWrap: true,
-	wordWrapWidth: Math.max(app.renderer.view.width / 2.5, 300),
-};
-let linkStyle = {
-	fontFamily: 'Montserrat',
-	fontSize: 23,
-	fill: '#007EC7',
-};
-function createPopUpRect(title) {
+function createPopUpRect(title, num) {
+	/* Styling */
+	let titleStyle = {
+		fontFamily: 'Montserrat',
+		fontSize: 35,
+		fontWeight: '600',
+		wordWrap: true,
+		lineHeight: 50,
+		wordWrapWidth:
+			window.outerHeight < 500
+				? window.outerWidth * 0.8
+				: Math.max(window.outerWidth / 3, 300),
+	};
+	let descriptionStyle = {
+		fontFamily: 'Montserrat',
+		fontSize: 23,
+		fontWeight: '400',
+		lineHeight: 50,
+		wordWrap: true,
+		wordWrapWidth:
+			window.outerHeight < 500
+				? window.outerWidth * 0.8
+				: Math.max(window.outerWidth / 3, 300),
+	};
+	let linkStyle = {
+		fontFamily: 'Montserrat',
+		fontSize: 23,
+		fill: '#007EC7',
+	};
 	popUpProject.removeChildren();
-	let x = app.stage.pivot.x + app.renderer.view.width / 4;
-	let y = app.renderer.view.height / 4;
+	let x = window.outerWidth * num + app.renderer.view.width / 4;
+	let y = window.outerHeight / 4;
 	let width = window.outerWidth / 2;
-	let height = app.renderer.view.height / 2;
-
-	if (window.outerWidth < 400) {
-		x = Math.floor(app.stage.pivot.x / window.innerWidth) * window.innerWidth;
-		y = app.renderer.view.height / 8;
+	let height = window.outerHeight / 2;
+	console.log(outerWidth, outerHeight, innerWidth, innerHeight);
+	if (window.outerWidth < 500) {
+		x = window.outerWidth * num;
+		y = window.outerHeight / 8;
 		width = window.outerWidth;
-		height = app.renderer.view.height * 0.75;
+		height = window.outerHeight * 0.75;
 	}
-	const rect = new PIXI.Graphics();
+	if (window.outerHeight < 500) {
+		x = window.outerWidth * num;
+		y = window.outerHeight / 6;
+		width = window.outerWidth;
+		height = window.outerHeight * 0.66;
+	}
+	let rect = new PIXI.Graphics();
 	rect.beginFill(0xf4f5e7).drawRoundedRect(x, y, width, height, 20).endFill();
 	rect.visible = true;
 
@@ -365,8 +386,7 @@ function createPopUpRect(title) {
 	closeButton.interactive = true;
 	closeButton.buttonMode = true;
 	closeButton.on('pointertap', function () {
-		app.stage.pivot.x =
-			Math.floor(app.stage.pivot.x / window.innerWidth) * window.innerWidth;
+		app.stage.pivot.x = window.outerWidth * num;
 		popUpProject.removeChildren();
 		popUpProject.visible = true;
 	});
@@ -376,53 +396,63 @@ function createPopUpRect(title) {
 		data[title].name,
 		titleStyle,
 		x + width / 10,
-		y + 50,
+		y + 30,
 		false,
 		'title'
 	);
 	scrollbox = popUpProject.addChild(
 		new Scrollbox({
 			boxWidth: (rect.width / 11) * 10 - 20,
-			boxHeight: rect.height - 210,
+			boxHeight: Math.max(rect.height - 150, 90),
 		})
 	);
 	let projectDetails = scrollbox.content.addChild(new PIXI.Graphics());
 	projectDetails
 		.beginFill(0xf4f5e7, 0.25)
-		.drawRect(0, 0, (rect.width / 11) * 9, rect.height - 210)
+		.drawRect(0, 0, (rect.width / 11) * 9, rect.height - 150)
 		.endFill();
-	scrollbox.position.set(x + rect.width / 10, y + 160);
-
-	let popDesc = createText(
-		data[title].description,
-		descriptionStyle,
-		0,
-		0,
-		false,
-		'description'
+	scrollbox.position.set(
+		x + rect.width / 10,
+		Math.min(popTitle.position.y + popTitle.height + 10, y + 130)
 	);
-	scrollbox.update();
-	if (data[title].linkOne) {
-		let popLinkOne = createText(
-			data[title].linkOne,
-			linkStyle,
-			x + rect.width / 6,
-			y + rect.height - 50,
-			true,
-			'projectGithub'
+	if (title !== 'techStack') {
+		let popDesc = createText(
+			data[title].description,
+			descriptionStyle,
+			0,
+			0,
+			false,
+			'description'
 		);
-		popLinkOne.on('pointertap', () => openLink(title, 'One'));
-	}
-	if (data[title].linkTwo) {
-		let popLinkTwo = createText(
-			data[title].linkTwo,
-			linkStyle,
-			x + (rect.width / 6) * 5,
-			y + rect.height - 50,
-			true,
-			'projectLive'
+		scrollbox.update();
+		if (data[title].linkOne) {
+			let popLinkOne = createText(
+				data[title].linkOne,
+				linkStyle,
+				x + rect.width / 6,
+				y + rect.height - 50,
+				true,
+				'projectGithub'
+			);
+			popLinkOne.on('pointertap', () => openLink(title, 'One'));
+		}
+		if (data[title].linkTwo) {
+			let popLinkTwo = createText(
+				data[title].linkTwo,
+				linkStyle,
+				x + (rect.width / 6) * 5,
+				y + rect.height - 50,
+				true,
+				'projectLive'
+			);
+			popLinkTwo.on('pointertap', () => openLink(title, 'Two'));
+		}
+	} else {
+		let stackSprite = new PIXI.Sprite(
+			PIXI.Texture.from('/siteAssets/techStack.png')
 		);
-		popLinkTwo.on('pointertap', () => openLink(title, 'Two'));
+		stackSprite.width = (rect.width / 11) * 9;
+		scrollbox.content.addChild(stackSprite);
 	}
 	return popUpProject;
 }
@@ -532,7 +562,8 @@ let helloCardSprite = createSprite(
 	helloCard,
 	'card',
 	0.5,
-	'helloCard'
+	'helloCard',
+	0
 );
 if (appWidth > 800) {
 	let hoyaSprite = createSprite(appWidth / 1, backY / 2, hoya, 'maranta', 0);
@@ -553,7 +584,16 @@ if (appWidth > 800) {
 //Project view helper code
 
 //function to create project sprites
-export function createSprite(x, y, texture, type, anchor = 0.5, name) {
+export function createSprite(
+	x,
+	y,
+	texture,
+	type,
+	anchor = 0.5,
+	name,
+	num,
+	special = null
+) {
 	const sprite = new Sprite(texture);
 	megaContainer.addChild(sprite);
 	sprite.anchor.set(0.5, anchor);
@@ -571,28 +611,31 @@ export function createSprite(x, y, texture, type, anchor = 0.5, name) {
 			'keys',
 			'guestbook',
 			'card',
+			'stack',
 		].includes(type)
 	) {
 		sprite.scale.set(scale[`${type}`]);
 		sprite.interactive = true;
 		sprite.buttonMode = true;
-		sprite.on('pointerover', () => {
+		sprite.on('pointerover', function () {
 			sprite.rotation = 0.05;
 			sprite.scale.set(scale[`${type}`] + 0.03);
+			if (special) this.texture = special;
 		});
-		sprite.on('pointerout', () => {
+		sprite.on('pointerout', function () {
 			sprite.rotation = 0;
 			sprite.scale.set(scale[`${type}`]);
+			if (special) this.texture = texture;
 		});
 		sprite.on('resize', () => {
 			sprite.scale.set(scale[`${type}`]);
 		});
-		sprite.on('pointertap', function () {
-			app.stage.pivot.x =
-				Math.floor(sprite.position.x / window.innerWidth) * window.innerWidth;
-			console.log(name, 'hi', data[name]);
-			createPopUpRect(name);
-		});
+		if (type !== 'radio') {
+			sprite.on('pointertap', function () {
+				app.stage.pivot.x = window.outerWidth * num;
+				createPopUpRect(name, num);
+			});
+		}
 	} else {
 		sprite.scale.set(scale[`${type}`]);
 	}
@@ -605,6 +648,8 @@ const deskTexture = PIXI.Texture.from('/siteAssets/desk-color-schemeLT.png');
 const chaiTexture = PIXI.Texture.from('/siteAssets/chaiNoon.png');
 const barkTexture = PIXI.Texture.from('/siteAssets/gobARk.png');
 const promiseTexture = PIXI.Texture.from('siteAssets/promiseHSLT.png');
+const stackTexture = PIXI.Texture.from('/siteAssets/stackbox.png');
+const stackRoll = PIXI.Texture.from('/siteAssets/stackboxroll.png');
 
 let chai = createSprite(
 	Math.min((appWidth / 2) * 2.6, (appWidth / 2) * 3 - 400 * scale.project),
@@ -612,7 +657,8 @@ let chai = createSprite(
 	chaiTexture,
 	'project',
 	0,
-	'chai'
+	'chai',
+	1
 );
 
 let gobARk = createSprite(
@@ -621,7 +667,8 @@ let gobARk = createSprite(
 	barkTexture,
 	'project',
 	0,
-	'gobARk'
+	'gobARk',
+	1
 );
 
 let promiseHS = createSprite(
@@ -630,7 +677,8 @@ let promiseHS = createSprite(
 	promiseTexture,
 	'project',
 	0.5,
-	'promiseHS'
+	'promiseHS',
+	1
 );
 
 let desk = createSprite(
@@ -638,6 +686,16 @@ let desk = createSprite(
 	(appHeight / 4) * 2.4,
 	deskTexture,
 	'desk'
+);
+let stack = createSprite(
+	(appWidth / 2) * 3 - 180 * scale.desk,
+	(appHeight / 4) * 2.4,
+	stackTexture,
+	'stack',
+	1,
+	'techStack',
+	1,
+	stackRoll
 );
 
 /****** About Me room *******/
@@ -666,7 +724,8 @@ let bfa = createSprite(
 	bfaText,
 	'book',
 	0.5,
-	'bfa'
+	'bfa',
+	2
 );
 
 let whitebook = PIXI.Texture.from('/siteAssets/whitebook.png');
@@ -676,7 +735,8 @@ let webtoons = createSprite(
 	whitebook,
 	'book',
 	0.5,
-	'webtoons'
+	'webtoons',
+	2
 );
 
 let blueText = PIXI.Texture.from('/siteAssets/blue-book.png');
@@ -686,18 +746,20 @@ let blueOcean = createSprite(
 	blueText,
 	'book',
 	0.5,
-	'blueOcean'
+	'blueOcean',
+	2
 );
 
 /* Right Shelf */
 let vertbook = PIXI.Texture.from('/siteAssets/vertbook.png');
-export let webnovels = createSprite(
+let webnovels = createSprite(
 	(appWidth / 4) * 10.8 - scale.book / 2 - 90 * scale.shelf,
 	(appHeight / 5) * 2 - 40 * scale.book,
 	vertbook,
 	'book',
 	0.5,
-	'webnovel'
+	'webnovel',
+	2
 );
 
 let krimTexture = PIXI.Texture.from('/siteAssets/krimson-queen.png');
@@ -707,7 +769,8 @@ let krimson = createSprite(
 	krimTexture,
 	'plant',
 	0.5,
-	'plants'
+	'plants',
+	2
 );
 
 let sideTab = PIXI.Texture.from('/siteAssets/sideboardLT.png');
@@ -725,7 +788,8 @@ let goat = createSprite(
 	goatText,
 	'coffee',
 	0.5,
-	'coffee'
+	'coffee',
+	2
 );
 
 let felText = PIXI.Texture.from('/siteAssets/stagg.png');
@@ -735,7 +799,8 @@ let stagg = createSprite(
 	felText,
 	'coffee',
 	0.5,
-	'tea'
+	'tea',
+	2
 );
 
 /**********    Contact Me    *************/
