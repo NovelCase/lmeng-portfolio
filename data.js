@@ -2,7 +2,7 @@ export let data = {
 	gobARk: {
 		name: 'go.bARk',
 		description:
-			"An Augmented Reality virtual pet game, built using the PERN (PostgreSQL, Express, React (and React Native), and Node.js) stack, and integrated with Viromedia’s ViroReact library. go.bARk comes equipped with three dogs to choose from and four finished dog/user interactions. \n Our goal with go.bARk was to create a fully functioning game that recreated the experience of some of our childhood favorite toys in a mobile application. We embraced the challenges of working with native applications, augmented reality, and multiplayer socket functionality. In the end, we created a project with a separately hosted back-end database that showcases the different experiences AR can provide. We also built out additional functionality that makes it easy to switch go.bARk's surface recognition to being a tabletop game using Pixi.js's raytracing capabilities.",
+			"An Augmented Reality virtual pet game, built using the PERN (PostgreSQL, Express, React (and React Native), and Node.js) stack, and integrated with Viromedia’s ViroReact library. go.bARk comes equipped with three dogs to choose from and four finished dog/user interactions. \n\tOur goal with go.bARk was to create a fully functioning game that recreated the experience of some of our childhood favorite toys in a mobile application. We embraced the challenges of working with native applications, augmented reality, and multiplayer socket functionality. In the end, we created a project with a separately hosted back-end database that showcases the different experiences AR can provide. We also built out additional functionality that makes it easy to switch go.bARk's surface recognition to being a tabletop game using Pixi.js's raytracing capabilities.",
 		linkOne: 'Github',
 		linkOneUrl: 'https://github.com/gh-capstone-team-c/Go.bARk',
 		linkTwo: 'Presentation',
@@ -59,7 +59,7 @@ export let data = {
 	webtoons: {
 		name: 'Webtoons',
 		description:
-			"My first long-format webcomic was Bongcheon-Dong Ghost by Horang. At the time I had never seen anything like it. If you haven't read it, I highly recommend the experience. No spoilers! Since then, I have read so many webtoons of all different genres and art styles. I'm particularly impressed by stories that have nuanced characters, stories that utilize different features on your phone, and stories where the characters either break the fourth wall or have no interest in the current plotline. Refreshing! \n Some titles: \n Gourmet Hound, Duchess's 50 Tea Recipes, Horang's Nightmare, Ghost Teller, I Don't Want This Kind of Hero, Tales of the Unusual, Odd Girl Out, Eleceed, Beware the Villainess, I Want to be You for a Day,  etc... etc... etc...",
+			"My first long-format webcomic was Bongcheon-Dong Ghost by Horang. At the time I had never seen anything like it. If you haven't read it, I highly recommend the experience. No spoilers! Since then, I have read so many webtoons of all different genres and art styles. I'm particularly impressed by stories that have nuanced characters, stories that utilize different features on your phone, and stories where the characters either break the fourth wall or have no interest in the current plotline. Refreshing! \nSome titles: \n\t\tGourmet Hound, The Duchess's 50 Tea Recipes, Horang's Nightmare, Ghost Teller, I Don't Want This Kind of Hero, Tales of the Unusual, Odd Girl Out, Eleceed, Beware the Villainess, I Want to be You for a Day,  etc... etc... etc...",
 		linkOne: 'Webtoons',
 		linkOneUrl: 'https://www.webtoons.com/en/',
 	},
@@ -76,5 +76,22 @@ export let data = {
 		name: 'Tea',
 		description:
 			"Growing up, tea was something that always sounded amazing but didn't particularly live up to it's smell or description. Until I started actually playing around with temperature and timing during brewing. Nowadays, I use another gadget to auto brew my teas for me! But this kettle is my go-to for pour-over coffees and larger batches of tea.",
+	},
+	novelCase: {
+		name: 'Novel Case',
+		description:
+			'Novel Case is the small but driven development team behind this and other websites! Founded by Jackie Feit, Marie Crumpton, and me, this team has banked numerous hours dedicated to creating unique solutions for personal experiences.',
+		linkOne: 'Github',
+		linkOneUrl: 'https://github.com/NovelCase',
+		linkTwo: 'Live Site',
+		linkTwoUrl: 'https://github.com/NovelCase',
+	},
+	navDesk: {
+		name: 'Navigation',
+		description: '/siteAssets/instructionsDesktop.png',
+	},
+	navMobile: {
+		name: 'Navigation',
+		description: '/siteAssets/instructionsmobile.png',
 	},
 };

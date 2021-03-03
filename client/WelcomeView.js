@@ -23,6 +23,7 @@ export default class Welcome extends React.Component {
 		this.chooseWeatherColor = this.chooseWeatherColor.bind(this);
 		this.rgbToHex = this.rgbToHex.bind(this);
 		this.componentToHex = this.componentToHex.bind(this);
+		this.drawWindows = this.drawWindows.bind(this);
 	}
 
 	async componentDidMount() {
@@ -41,29 +42,32 @@ export default class Welcome extends React.Component {
 		} catch (err) {
 			console.log(err);
 		}
-
+		this.drawWindows();
+	}
+	drawWindows() {
+		PixiApp.windowWeather.removeChildren();
 		//creating window colors
 		weatherWindow = new PIXI.Graphics();
 		//available if needed for addt'l responsive design / scaling
 		let backWindow = PixiApp.backWindowSprite;
-		let backWindowWidth = PixiApp.backWindowSprite.width;
-		let backWindowHeight = PixiApp.backWindowSprite.height;
+		let backWindowWidth = 850 * PixiApp.scale.windows;
+		if (window.outerWidth < 700) backWindowWidth = 500 * PixiApp.scale.windows;
+		let backWindowHeight = 417 * PixiApp.scale.windows;
 		//available if needed for addt'l responsive design / scaling
-		let leftWindowHeight = PixiApp.leftWindowSprite.height;
+		let leftWindowHeight = 925 * PixiApp.scale.windows;
 		let leftWindowSprite = PixiApp.leftWindowSprite;
+		let leftWindowWidth = 265 * PixiApp.scale.windows;
 
 		//back window
 		weatherWindow
 			.beginFill(this.state.weatherColor)
 			.drawRect(
 				//based on left window position and back window dimensions
-				backWindow.position.x -
-					backWindowWidth / 2 +
-					40 * PixiApp.scale.windows,
+				backWindow.position.x - backWindowWidth / 2,
 				backWindow.position.y + 20 * PixiApp.scale.windows,
 
-				backWindowWidth * 0.9,
-				backWindowHeight * 0.85
+				backWindowWidth,
+				backWindowHeight * 0.9
 			)
 			.endFill();
 		weatherWindow.interactive = true;
@@ -86,25 +90,17 @@ export default class Welcome extends React.Component {
 			.beginFill(this.state.weatherColor)
 			.drawPolygon([
 				//top left corner
-				leftWindowSprite.x -
-					leftWindowSprite.width / 2 +
-					30 * PixiApp.scale.windows,
+				leftWindowSprite.x - leftWindowWidth / 2 + 30 * PixiApp.scale.windows,
 
 				leftWindowSprite.position.y - leftWindowHeight * 0.45,
 				//bottom left
-				leftWindowSprite.x -
-					leftWindowSprite.width / 2 +
-					30 * PixiApp.scale.windows,
+				leftWindowSprite.x - leftWindowWidth / 2 + 30 * PixiApp.scale.windows,
 				leftWindowSprite.position.y + leftWindowHeight * 0.45,
 				//bottom right
-				leftWindowSprite.x +
-					leftWindowSprite.width / 2 -
-					30 * PixiApp.scale.windows,
+				leftWindowSprite.x + leftWindowWidth / 2 - 30 * PixiApp.scale.windows,
 				leftWindowSprite.position.y + leftWindowHeight * 0.25,
 				//top right corner
-				leftWindowSprite.x +
-					leftWindowSprite.width / 2 -
-					30 * PixiApp.scale.windows,
+				leftWindowSprite.x + leftWindowWidth / 2 - 30 * PixiApp.scale.windows,
 				leftWindowSprite.position.y - leftWindowHeight * 0.25,
 			])
 			.endFill();
@@ -131,25 +127,19 @@ export default class Welcome extends React.Component {
 			.beginFill(0xf4f5e7, 0.1)
 			.drawPolygon([
 				//top left corner
-				leftWindowSprite.x -
-					leftWindowSprite.width / 2 +
-					30 * PixiApp.scale.windows,
+				leftWindowSprite.x - leftWindowWidth / 2 + 30 * PixiApp.scale.windows,
 				leftWindowSprite.position.y - leftWindowHeight * 0.45,
 				//bottom left
 				Math.min(
 					PixiApp.appWidth / 25,
-					leftWindowSprite.x -
-						leftWindowSprite.width / 2 +
-						30 * PixiApp.scale.windows
+					leftWindowSprite.x - leftWindowWidth / 2 + 30 * PixiApp.scale.windows
 				),
 				PixiApp.appHeight,
 				//bottom right
 				(PixiApp.appWidth / 3) * 2,
 				PixiApp.appHeight,
 				//top right corner
-				leftWindowSprite.x +
-					leftWindowSprite.width / 2 -
-					30 * PixiApp.scale.windows,
+				leftWindowSprite.x + leftWindowWidth / 2 - 30 * PixiApp.scale.windows,
 				leftWindowSprite.position.y - leftWindowHeight * 0.25,
 			])
 			.endFill();
@@ -181,26 +171,6 @@ export default class Welcome extends React.Component {
 			])
 			.endFill();
 		PixiApp.windowWeather.addChild(lightTwo);
-		// const findMeDiv = new PIXI.Graphics();
-		// let findMeSprite = new PIXI.Graphics();
-		// findMeSprite.beginFill(this.state.weathercolor)
-		// findMeSprite.position.x = backWindow.position.x + backWindow.width / 1.3;
-		// findMeSprite.position.y = backWindow.position.y;
-		// findMeSprite.anchor.set(0.5);
-		// findMeSprite.interactive = true;
-		// findMeSprite.buttonMode = true;
-		// findMeSprite.on('pointerover', () => (findMeSprite.tint = 0x007ec7));
-		// findMeSprite.on('pointerout', () => (findMeSprite.tint = 0xffffff));
-		// findMeSprite.on('pointertap', () => {
-		// 	let find = confirm('Change weather to local weather?');
-		// 	if (find) {
-		// 		alert('Updated weather!');
-		// 		this.findMe();
-		// 	}
-		// 	PixiApp.app.stage.pivot.x = 0;
-		// });
-
-		// PixiApp.findMeDiv.addChild(findMeSprite);
 	}
 
 	async findMe() {
@@ -231,61 +201,62 @@ export default class Welcome extends React.Component {
 	componentDidUpdate(prevState) {
 		//creating window colors
 		if (prevState.weatherColor !== this.state.weatherColor) {
-			weatherWindow = new PIXI.Graphics();
-			//available if needed for addt'l responsive design / scaling
-			let backWindow = PixiApp.backWindowSprite;
-			let backWindowWidth = PixiApp.backWindowSprite.width;
-			let backWindowHeight = PixiApp.backWindowSprite.height;
-			//available if needed for addt'l responsive design / scaling
-			let leftWindowHeight = PixiApp.leftWindowSprite.height;
-			let backWindowX = PixiApp.backWindowSprite.position.x;
-			let leftWindowSprite = PixiApp.leftWindowSprite;
+			this.drawWindows();
+			// weatherWindow = new PIXI.Graphics();
+			// //available if needed for addt'l responsive design / scaling
+			// let backWindow = PixiApp.backWindowSprite;
+			// let backWindowWidth = PixiApp.backWindowSprite.width;
+			// let backWindowHeight = PixiApp.backWindowSprite.height;
+			// //available if needed for addt'l responsive design / scaling
+			// let leftWindowHeight = PixiApp.leftWindowSprite.height;
+			// let backWindowX = PixiApp.backWindowSprite.position.x;
+			// let leftWindowSprite = PixiApp.leftWindowSprite;
 
-			//back window
-			weatherWindow
-				.beginFill(this.state.weatherColor)
-				.drawRect(
-					//based on left window position and back window dimensions
-					backWindowX - backWindowWidth / 2,
-					backWindow.position.y + 20 * PixiApp.scale.windows,
+			// //back window
+			// weatherWindow
+			// 	.beginFill(this.state.weatherColor)
+			// 	.drawRect(
+			// 		//based on left window position and back window dimensions
+			// 		backWindowX - backWindowWidth / 2,
+			// 		backWindow.position.y + 20 * PixiApp.scale.windows,
 
-					backWindowWidth,
-					backWindowHeight * 0.9
-				)
-				.endFill();
+			// 		backWindowWidth,
+			// 		backWindowHeight * 0.9
+			// 	)
+			// 	.endFill();
 
-			PixiApp.windowWeather.addChild(weatherWindow);
-			PixiApp.windowWeather.removeChild(sideWeatherWindow);
+			// PixiApp.windowWeather.addChild(weatherWindow);
+			// PixiApp.windowWeather.removeChild(sideWeatherWindow);
 
-			//dependent on left window position and back window dimensions
-			sideWeatherWindow = new PIXI.Graphics();
-			sideWeatherWindow
-				.beginFill(this.state.weatherColor)
-				.drawPolygon([
-					//top left corner
-					leftWindowSprite.x -
-						leftWindowSprite.width / 2 +
-						30 * PixiApp.scale.windows,
+			// //dependent on left window position and back window dimensions
+			// sideWeatherWindow = new PIXI.Graphics();
+			// sideWeatherWindow
+			// 	.beginFill(this.state.weatherColor)
+			// 	.drawPolygon([
+			// 		//top left corner
+			// 		leftWindowSprite.x -
+			// 			leftWindowWidth / 2 +
+			// 			30 * PixiApp.scale.windows,
 
-					leftWindowSprite.position.y - leftWindowHeight * 0.45,
-					//bottom left
-					leftWindowSprite.x -
-						leftWindowSprite.width / 2 +
-						30 * PixiApp.scale.windows,
-					leftWindowSprite.position.y + leftWindowHeight * 0.45,
-					//bottom right
-					leftWindowSprite.x +
-						leftWindowSprite.width / 2 -
-						30 * PixiApp.scale.windows,
-					leftWindowSprite.position.y + leftWindowHeight * 0.25,
-					//top right corner
-					leftWindowSprite.x +
-						leftWindowSprite.width / 2 -
-						30 * PixiApp.scale.windows,
-					leftWindowSprite.position.y - leftWindowHeight * 0.25,
-				])
-				.endFill();
-			PixiApp.windowWeather.addChild(sideWeatherWindow);
+			// 		leftWindowSprite.position.y - leftWindowHeight * 0.45,
+			// 		//bottom left
+			// 		leftWindowSprite.x -
+			// 			leftWindowWidth / 2 +
+			// 			30 * PixiApp.scale.windows,
+			// 		leftWindowSprite.position.y + leftWindowHeight * 0.45,
+			// 		//bottom right
+			// 		leftWindowSprite.x +
+			// 			leftWindowWidth / 2 -
+			// 			30 * PixiApp.scale.windows,
+			// 		leftWindowSprite.position.y + leftWindowHeight * 0.25,
+			// 		//top right corner
+			// 		leftWindowSprite.x +
+			// 			leftWindowWidth / 2 -
+			// 			30 * PixiApp.scale.windows,
+			// 		leftWindowSprite.position.y - leftWindowHeight * 0.25,
+			// 	])
+			// 	.endFill();
+			// PixiApp.windowWeather.addChild(sideWeatherWindow);
 		}
 	}
 

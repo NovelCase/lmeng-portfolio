@@ -4,9 +4,9 @@ import * as PIXI from 'pixi.js';
 
 let menu = {
 	ham: '/siteAssets/hamburger.png',
-	hamHover: '/siteAssets/hamPurp.png',
+	hamHover: '/siteAssets/hamRoll.png',
 	closed: '/siteAssets/x-mark.png',
-	closedHover: '/siteAssets/xPurp.png',
+	closedHover: '/siteAssets/x-roll.png',
 };
 export default class Menu extends React.Component {
 	constructor() {
@@ -33,10 +33,8 @@ export default class Menu extends React.Component {
 	onClickTap() {
 		if (this.state.visible) {
 			this.setState({ menu: 'ham', visible: false });
-			// menuSprite.texture = hamMenu;
 		} else {
 			this.setState({ menu: 'closed', visible: true });
-			// menuSprite.texture = closedIcon;
 		}
 	}
 
@@ -56,6 +54,10 @@ export default class Menu extends React.Component {
 							onClick={() => {
 								PixiApp.app.stage.pivot.x = 0;
 								this.onClickTap();
+								PixiApp.helpButton.position.x =
+									PixiApp.app.stage.pivot.x +
+									PixiApp.app.renderer.view.width -
+									35;
 							}}
 						>
 							Home
@@ -64,6 +66,10 @@ export default class Menu extends React.Component {
 							onClick={() => {
 								PixiApp.app.stage.pivot.x = PixiApp.app.renderer.view.width;
 								this.onClickTap();
+								PixiApp.helpButton.position.x =
+									PixiApp.app.stage.pivot.x +
+									PixiApp.app.renderer.view.width -
+									35;
 							}}
 						>
 							Projects
@@ -72,6 +78,10 @@ export default class Menu extends React.Component {
 							onClick={() => {
 								PixiApp.app.stage.pivot.x = PixiApp.app.renderer.view.width * 2;
 								this.onClickTap();
+								PixiApp.helpButton.position.x =
+									PixiApp.app.stage.pivot.x +
+									PixiApp.app.renderer.view.width -
+									35;
 							}}
 						>
 							About Me
@@ -80,6 +90,10 @@ export default class Menu extends React.Component {
 							onClick={() => {
 								PixiApp.app.stage.pivot.x = PixiApp.app.renderer.view.width * 3;
 								this.onClickTap();
+								PixiApp.helpButton.position.x =
+									PixiApp.app.stage.pivot.x +
+									PixiApp.app.renderer.view.width -
+									35;
 							}}
 						>
 							Contact

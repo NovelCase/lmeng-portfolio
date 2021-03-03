@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
 
 * {
-	font-family: 'Montserrat', sans-serif;
+	font-family: 'Montserrat', 'sans-serif';
 }
 body {
 	height: 100%;
@@ -35,34 +35,41 @@ body {
 #outerContainer {
 	display: flex;
 	flex-direction: row;
+	flex-wrap: nowrap;
+}
+#container {
+	background-color: #f9eee0;
+	width: 25vw;
 }
 iframe {
 	z-index: 2;
 	position: absolute;
 }
 #loading {
-	background-color: #f9eee0;
+	width: inherit;
 	display: flex;
-	flex-flow: column nowrap;
+	flex-flow: column wrap;
 	z-index: 1;
 	height: 100vh;
-	width: inherit;
-	/* position: relative; */
-	padding: 10%;
+	justify-content: center;
 	align-items: center;
+	text-align: center;
+}
+#loading > h1 {
+	font-size: 14pt;
 }
 #anim-radio {
-	padding-top: 25vh;
+	/* width: auto; */
 	position: relative;
 	animation-name: rocking;
 	animation: rocking 2s alternate 0s infinite;
 }
 @keyframes rocking {
 	from {
-		left: 0;
+		left: -25%;
 	}
 	to {
-		left: 50%;
+		left: 25%;
 	}
 }
 

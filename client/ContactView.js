@@ -2,8 +2,8 @@ import React from 'react';
 import * as PixiApp from '../pixi/projectStage.js';
 import * as PIXI from 'pixi.js';
 
-let width = PixiApp.appWidth;
-let height = PixiApp.appHeight;
+let width = window.outerWidth;
+let height = window.outerHeight;
 
 export default class Contact extends React.Component {
 	constructor() {
@@ -31,10 +31,14 @@ export default class Contact extends React.Component {
 			this.setState({ visible: false });
 			PixiApp.app.stage.pivot.x = width * 3;
 			PixiApp.app.renderer.view.width += width / 4;
+			PixiApp.helpButton.position.x =
+				PixiApp.app.stage.pivot.x + PixiApp.app.renderer.view.width - 35;
 		} else {
 			if (PixiApp.app.renderer.view.width >= 500) {
 				this.setState({ visible: true });
 				PixiApp.app.renderer.view.width -= width / 4;
+				PixiApp.helpButton.position.x =
+					PixiApp.app.stage.pivot.x + PixiApp.app.renderer.view.width - 35;
 			} else
 				window.open(
 					'https://open.spotify.com/embed/playlist/4R4hOYnM63VAOTzfgqAR48',
@@ -50,7 +54,7 @@ export default class Contact extends React.Component {
 					<div id="container">
 						<iframe
 							src="https://open.spotify.com/embed/playlist/4R4hOYnM63VAOTzfgqAR48"
-							width={width < 400 / 4}
+							width={width / 4}
 							height={height}
 							// frameborder='0'
 							allowtransparency="true"
@@ -60,9 +64,7 @@ export default class Contact extends React.Component {
 							<div id="anim-radio">
 								<img src="/siteAssets/radio.png" />
 							</div>
-							<div>
-								<h1>Loading! Please Wait...</h1>
-							</div>
+							<h1>Loading! Please Wait...</h1>
 						</div>
 					</div>
 				) : (

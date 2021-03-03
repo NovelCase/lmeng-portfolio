@@ -9,7 +9,7 @@ let lock = {
 /** canvas configuration setup */
 window.WebFontConfig = {
 	google: {
-		families: ['Montserrat'],
+		families: ['Montserrat', 'sans-serif'],
 	},
 };
 (function () {
@@ -31,10 +31,7 @@ export const app = new PIXI.Application({
 app.renderer.backgroundColor = 0xa68655;
 let pixiDiv = document.getElementById('pixi');
 pixiDiv.appendChild(app.view);
-if (localStorage.getItem('position')) {
-	app.stage.pivot.x = localStorage.getItem('position') * window.innerWidth;
-	localStorage.removeItem('position');
-}
+
 export const appWidth = window.innerWidth;
 export const appHeight = window.innerHeight;
 
@@ -50,6 +47,7 @@ left.press = () => {
 			app.stage.pivot.x =
 				Math.floor(app.stage.pivot.x / appWidth) * appWidth - appWidth;
 		} else app.stage.pivot.x = 0;
+		helpButton.position.x = app.stage.pivot.x + appWidth - 35;
 	}
 };
 
@@ -60,6 +58,7 @@ right.press = () => {
 			app.stage.pivot.x =
 				Math.floor(app.stage.pivot.x / appWidth) * appWidth + appWidth;
 		} else app.stage.pivot.x = 3 * appWidth;
+		helpButton.position.x = app.stage.pivot.x + appWidth - 35;
 	}
 };
 
@@ -104,6 +103,7 @@ function keyboard(value) {
 			) {
 				app.stage.pivot.x = appWidth * 3;
 			} else app.stage.pivot.x += event.deltaY * 1.2 || event.deltaX * 1.2;
+			helpButton.position.x = app.stage.pivot.x + appWidth - 35;
 		}
 	};
 	/* resize - web resposive */
@@ -112,7 +112,7 @@ function keyboard(value) {
 		popUpProject.removeChildren();
 		localStorage.setItem(
 			'position',
-			Math.floor(app.stage.pivot.x / window.innerWidth)
+			Math.round(app.stage.pivot.x / window.innerWidth)
 		);
 		window.location.reload();
 	}
@@ -161,18 +161,20 @@ export let scale = {
 	card: 0.85,
 	findMe: 0.5,
 	stack: 1,
+	logo: 0.15,
 };
 if (appHeight < 400) {
 	scale.project = 0.2;
 	scale.plant = 0.15;
 	scale.desk = 0.45;
-	scale.shelf = scale.decor = scale.table = 0.5;
+	scale.shelf = scale.decor = scale.table = scale.stack = 0.5;
 	scale.guestbook = 0.35;
 	scale.board = scale.card = scale.snake = scale.monstera = 0.4;
-	scale.book = scale.stack = 0.6;
+	scale.book = 0.6;
 	scale.radio = 0.8;
 	scale.keys = scale.windows = scale.coffee = 0.3;
 	scale.maranta = scale.palms = 0.25;
+	scale.logo = scale.stack / 6;
 } else if (appHeight < 500) {
 	scale.project = scale.maranta = 0.25;
 	scale.plant = 0.2;
@@ -183,6 +185,7 @@ if (appHeight < 400) {
 	scale.radio = 0.8;
 	scale.keys = scale.coffee = scale.palms = 0.3;
 	scale.windows = scale.card = scale.snake = scale.monstera = 0.4;
+	scale.logo = scale.stack / 6;
 } else if (appWidth < 400) {
 	scale.project = scale.plant = scale.maranta = scale.coffee = 0.3;
 	scale.desk = 0.55;
@@ -194,6 +197,7 @@ if (appHeight < 400) {
 	scale.windows = scale.snake = scale.monstera = 0.48;
 	scale.card = 0.45;
 	scale.keys = 0.4;
+	scale.logo = scale.stack / 6;
 } else if (appWidth < 500) {
 	scale.project = scale.maranta = 0.35;
 	scale.card = 0.5;
@@ -206,6 +210,7 @@ if (appHeight < 400) {
 	scale.keys = scale.coffee = 0.4;
 	scale.windows = findMeDiv = 0.455;
 	scale.windows = scale.snake = scale.monstera = 0.56;
+	scale.logo = scale.stack / 6;
 } else if (appWidth > 900) {
 	scale.shelf = 1;
 	scale.desk = 1;
@@ -325,6 +330,10 @@ shadow
 	.endFill();
 shadow.visible = false;
 
+if (localStorage.getItem('position')) {
+	app.stage.pivot.x = localStorage.getItem('position') * window.innerWidth;
+	localStorage.removeItem('position');
+}
 // popup logic
 
 let scrollbox;
@@ -333,7 +342,7 @@ let popUpProject = new PIXI.Container();
 function createPopUpRect(title, num) {
 	/* Styling */
 	let titleStyle = {
-		fontFamily: 'Montserrat',
+		fontFamily: ['Montserrat', 'sans-serif'],
 		fontSize: 35,
 		fontWeight: '600',
 		wordWrap: true,
@@ -344,7 +353,7 @@ function createPopUpRect(title, num) {
 				: Math.max(window.outerWidth / 3, 300),
 	};
 	let descriptionStyle = {
-		fontFamily: 'Montserrat',
+		fontFamily: ['Montserrat', 'sans-serif'],
 		fontSize: 23,
 		fontWeight: '400',
 		lineHeight: 50,
@@ -355,7 +364,7 @@ function createPopUpRect(title, num) {
 				: Math.max(window.outerWidth / 3, 300),
 	};
 	let linkStyle = {
-		fontFamily: 'Montserrat',
+		fontFamily: ['Montserrat', 'sans-serif'],
 		fontSize: 23,
 		fill: '#007EC7',
 	};
@@ -379,8 +388,8 @@ function createPopUpRect(title, num) {
 	const redXTexture = PIXI.Texture.from('/siteAssets/x-mark.png');
 	const closeButton = new PIXI.Sprite(redXTexture);
 	closeButton.anchor.set(1, 0);
-	closeButton.position.x = x + width - 2;
-	closeButton.position.y = y + 2;
+	closeButton.position.x = x + width - 10;
+	closeButton.position.y = y + 10;
 	closeButton.visible = true;
 	closeButton.interactive = true;
 	closeButton.buttonMode = true;
@@ -416,7 +425,21 @@ function createPopUpRect(title, num) {
 		x + rect.width / 10,
 		Math.min(popTitle.position.y + popTitle.height + 10, y + 130)
 	);
-	if (title !== 'techStack') {
+	if (title === 'techStack' || title === 'navDesk') {
+		if (
+			window.outerWidth < 700 &&
+			window.outerHeight < 700 &&
+			title === 'navDesk'
+		)
+			title = 'navMobile';
+		let spriteBox = new PIXI.Sprite(
+			PIXI.Texture.from(`${data[title].description}`)
+		);
+		spriteBox.height *= ((rect.width / 11) * 9) / spriteBox.height;
+		spriteBox.width = (rect.width / 11) * 9;
+
+		scrollbox.content.addChild(spriteBox);
+	} else {
 		let popDesc = createText(
 			data[title].description,
 			descriptionStyle,
@@ -448,14 +471,6 @@ function createPopUpRect(title, num) {
 			);
 			popLinkTwo.on('pointertap', () => openLink(title, 'Two'));
 		}
-	} else {
-		let stackSprite = new PIXI.Sprite(
-			PIXI.Texture.from('/siteAssets/techStack.png')
-		);
-		stackSprite.height *= ((rect.width / 11) * 9) / stackSprite.height;
-		stackSprite.width = (rect.width / 11) * 9;
-
-		scrollbox.content.addChild(stackSprite);
 	}
 	return popUpProject;
 }
@@ -615,18 +630,19 @@ export function createSprite(
 			'guestbook',
 			'card',
 			'stack',
+			'logo',
 		].includes(type)
 	) {
 		sprite.scale.set(scale[`${type}`]);
 		sprite.interactive = true;
 		sprite.buttonMode = true;
 		sprite.on('pointerover', function () {
-			sprite.rotation = 0.05;
-			sprite.scale.set(scale[`${type}`] + 0.03);
+			sprite.rotation += 0.08;
+			sprite.scale.set(scale[`${type}`] + 0.05);
 			if (special) this.texture = special;
 		});
 		sprite.on('pointerout', function () {
-			sprite.rotation = 0;
+			sprite.rotation -= 0.08;
 			sprite.scale.set(scale[`${type}`]);
 			if (special) this.texture = texture;
 		});
@@ -634,12 +650,15 @@ export function createSprite(
 			sprite.scale.set(scale[`${type}`]);
 		});
 		if (type !== 'radio') {
-			sprite.on('pointertap', function () {
-				app.stage.pivot.x = window.outerWidth * num;
-				lock[scroll] = true;
-				shadow.visible = true;
-				createPopUpRect(name, num);
-			});
+			if (typeof name === 'function') {
+				sprite.on('pointertap', name);
+			} else
+				sprite.on('pointertap', function () {
+					app.stage.pivot.x = window.outerWidth * num;
+					lock[scroll] = true;
+					shadow.visible = true;
+					createPopUpRect(name, num);
+				});
 		}
 	} else {
 		sprite.scale.set(scale[`${type}`]);
@@ -655,6 +674,9 @@ const barkTexture = PIXI.Texture.from('/siteAssets/gobARk.png');
 const promiseTexture = PIXI.Texture.from('siteAssets/promiseHSLT.png');
 const stackTexture = PIXI.Texture.from('/siteAssets/stackbox.png');
 const stackRoll = PIXI.Texture.from('/siteAssets/stackboxroll.png');
+let resumeTexture = PIXI.Texture.from('/siteAssets/resume.png');
+let resumeRollTexture = PIXI.Texture.from('/siteAssets/resumeroll.png');
+let novelTexture = PIXI.Texture.from('/siteAssets/novelCaseSticker.png');
 
 let chai = createSprite(
 	Math.min((appWidth / 2) * 2.6, (appWidth / 2) * 3 - 400 * scale.project),
@@ -702,7 +724,46 @@ let stack = createSprite(
 	1,
 	stackRoll
 );
+let helpTexture = PIXI.Texture.from('/siteAssets/helpbutton.png');
+let helpRollTexture = PIXI.Texture.from('/siteAssets/helpbuttonroll.png');
 
+export let helpButton = createSprite(
+	app.stage.pivot.x + appWidth - 35,
+	appHeight - 25,
+	helpTexture,
+	'stack',
+	1,
+	'navDesk',
+	0,
+	helpRollTexture
+);
+
+const resFunc = () => {
+	let openRes = confirm('Open resume in new window?');
+	if (openRes) window.open('https://github.com/leslie-meng', '_blank');
+	app.stage.pivot.x = appWidth;
+};
+let resume = createSprite(
+	(appWidth / 2) * 3 - 180 * scale.desk,
+	(appHeight / 4) * 2.4 + 9 * scale.desk,
+	resumeTexture,
+	'stack',
+	0,
+	resFunc,
+	1,
+	resumeRollTexture
+);
+
+let novelCase = createSprite(
+	(appWidth / 2) * 3 + 170 * scale.desk,
+	(appHeight / 4) * 2.4 + 95 * scale.desk,
+	novelTexture,
+	'logo',
+	0,
+	'novelCase',
+	1
+);
+novelCase.rotation = -0.5;
 /****** About Me room *******/
 
 let shelfTexture = PIXI.Texture.from('/siteAssets/shelfLT.png');
@@ -811,7 +872,7 @@ let stagg = createSprite(
 /**********    Contact Me    *************/
 
 /* socials links */
-let socialsText = PIXI.Texture.from('/siteAssets/socials-board-nk.png');
+let socialsText = PIXI.Texture.from('/siteAssets/socials-board.png');
 let chalkboard = createSprite(
 	(appWidth / 2) * 6.6,
 	backY + (appHeight * 3) / 24,
