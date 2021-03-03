@@ -28,6 +28,8 @@
 		"node": "^14.13.0",
 		"nodemon": "^2.0.4",
 		"path": "^0.12.7",
+		"pixi-scrollbox": "^2.2.3",
+		"pixi-viewport": "^4.21.1",
 		"pixi.js": "^5.3.3",
 		"react": "^16.13.1",
 		"react-dom": "^16.13.1",

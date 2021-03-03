@@ -1,24 +1,88 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
 
-:root {
-}
 * {
-	font-family: 'Nunito Sans', sans-serif;
+	font-family: 'Montserrat', 'sans-serif';
 }
 body {
+	height: 100%;
+	overflow: hidden;
+	margin: 0;
 }
-#app {
-	max-width: 50%;
-	/* padding: 0.2rem 0.2rem;
-	margin: 1.5rem; */
-	/* border: solid 5px var(--main-bg-color);
-	outline-offset: 1rem;
-	outline: 1rem solid #363636; */
+.hamburger {
+	position: absolute;
+	top: 10px;
+	left: 25px;
 }
-#pixi {
-}
+.menu {
+	position: absolute;
+	top: 15px;
+	left: 15%;
 
+	overflow: auto;
+	white-space: nowrap;
+	color: #a68655;
+	width: 80%;
+	margin: 0 10px;
+}
+.menu > h1 {
+	font-size: 16pt;
+	margin: 0 10px;
+	display: inline-block;
+}
+.menu > h1:hover {
+	color: #007ec7;
+}
 #outerContainer {
 	display: flex;
 	flex-direction: row;
+	flex-wrap: nowrap;
+}
+#container {
+	background-color: #f9eee0;
+	width: 25vw;
+}
+iframe {
+	z-index: 2;
+	position: absolute;
+}
+#loading {
+	width: inherit;
+	display: flex;
+	flex-flow: column wrap;
+	z-index: 1;
+	height: 100vh;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+}
+#loading > h1 {
+	font-size: 14pt;
+}
+#anim-radio {
+	/* width: auto; */
+	position: relative;
+	animation-name: rocking;
+	animation: rocking 2s alternate 0s infinite;
+}
+@keyframes rocking {
+	from {
+		left: -25%;
+	}
+	to {
+		left: 25%;
+	}
+}
+
+@media only screen and (min-width: 600px) and (min-height: 400px) {
+	.menu {
+		top: 10px;
+	}
+	.menu > h1 {
+		font-size: 28pt;
+	}
+	.hamburger {
+		position: absolute;
+		top: 15px;
+		left: 25px;
+	}
 }

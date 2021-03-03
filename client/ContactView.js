@@ -2,8 +2,8 @@ import React from 'react';
 import * as PixiApp from '../pixi/projectStage.js';
 import * as PIXI from 'pixi.js';
 
-let width = PixiApp.appWidth;
-let height = PixiApp.appHeight;
+let width = window.outerWidth;
+let height = window.outerHeight;
 
 export default class Contact extends React.Component {
 	constructor() {
@@ -16,18 +16,14 @@ export default class Contact extends React.Component {
 	componentDidMount() {
 		let radioText = PIXI.Texture.from('/siteAssets/radio.png');
 		let radio = PixiApp.createSprite(
-			(width / 2) * 7.4,
-			(height / 4) * 2.4 + 10 * PixiApp.scale.radio,
+			PixiApp.secondMonstera.position.x,
+			PixiApp.secondMonstera.position.y + PixiApp.scale.radio * 15,
 			radioText,
 			'radio'
 		);
-		radio.on('mouseover', () => (radio.tint = 0x007ec7));
-		radio.on('mouseout', () => (radio.tint = 0xffffff));
-		radio.on('click', () => {
+		radio.on('pointertap', () => {
 			this.onClickTap();
-			console.log('hi');
 		});
-		radio.on('tap', () => this.onClickTap());
 	}
 
 	onClickTap() {
@@ -35,27 +31,44 @@ export default class Contact extends React.Component {
 			this.setState({ visible: false });
 			PixiApp.app.stage.pivot.x = width * 3;
 			PixiApp.app.renderer.view.width += width / 4;
+			PixiApp.helpButton.position.x =
+				PixiApp.app.stage.pivot.x + PixiApp.app.renderer.view.width - 35;
 		} else {
-			this.setState({ visible: true });
-			PixiApp.app.renderer.view.width -= width / 4;
+			if (PixiApp.app.renderer.view.width >= 500) {
+				this.setState({ visible: true });
+				PixiApp.app.renderer.view.width -= width / 4;
+				PixiApp.helpButton.position.x =
+					PixiApp.app.stage.pivot.x + PixiApp.app.renderer.view.width - 35;
+			} else
+				window.open(
+					'https://open.spotify.com/embed/playlist/4R4hOYnM63VAOTzfgqAR48',
+					'_blank'
+				);
 		}
 	}
 
 	render() {
-		console.log('visible? ', this.state.visible);
 		return (
 			<div>
 				{this.state.visible ? (
-					<iframe
-						src='https://open.spotify.com/embed/playlist/4R4hOYnM63VAOTzfgqAR48'
-						width={width / 4}
-						height={height}
-						// frameborder='0'
-						allowtransparency='true'
-						allow='encrypted-media'
-					></iframe>
+					<div id="container">
+						<iframe
+							src="https://open.spotify.com/embed/playlist/4R4hOYnM63VAOTzfgqAR48"
+							width={width / 4}
+							height={height}
+							// frameborder='0'
+							allowtransparency="true"
+							allow="encrypted-media"
+						></iframe>
+						<div id="loading">
+							<div id="anim-radio">
+								<img src="/siteAssets/radio.png" />
+							</div>
+							<h1>Loading! Please Wait...</h1>
+						</div>
+					</div>
 				) : (
-					<div />
+					<></>
 				)}
 			</div>
 		);
