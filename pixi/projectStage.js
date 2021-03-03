@@ -452,7 +452,9 @@ function createPopUpRect(title, num) {
 		let stackSprite = new PIXI.Sprite(
 			PIXI.Texture.from('/siteAssets/techStack.png')
 		);
+		stackSprite.height *= ((rect.width / 11) * 9) / stackSprite.height;
 		stackSprite.width = (rect.width / 11) * 9;
+
 		scrollbox.content.addChild(stackSprite);
 	}
 	return popUpProject;
