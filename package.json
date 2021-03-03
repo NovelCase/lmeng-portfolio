@@ -6,6 +6,7 @@
 	"scripts": {
 		"test": "test",
 		"build-client-watch": "webpack -w",
+		"build": "webpack",
 		"start": "node server/index.js",
 		"deploy": "script/deploy",
 		"start-dev": "npm run build-client-watch & npm run start"
