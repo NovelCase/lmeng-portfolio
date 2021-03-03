@@ -318,6 +318,12 @@ floor
 	])
 	.endFill();
 bgContainer.addChild(floor);
+let shadow = new PIXI.Graphics();
+shadow
+	.beginFill(0x000000, 0.7)
+	.drawRect(0, 0, appWidth * 4, appHeight * 4)
+	.endFill();
+shadow.visible = false;
 
 // popup logic
 
@@ -383,6 +389,7 @@ function createPopUpRect(title, num) {
 		popUpProject.removeChildren();
 		popUpProject.visible = true;
 		lock[scroll] = false;
+		shadow.visible = false;
 	});
 	popUpProject.addChild(rect);
 	popUpProject.addChild(closeButton);
@@ -628,7 +635,7 @@ export function createSprite(
 			sprite.on('pointertap', function () {
 				app.stage.pivot.x = window.outerWidth * num;
 				lock[scroll] = true;
-
+				shadow.visible = true;
 				createPopUpRect(name, num);
 			});
 		}
@@ -889,4 +896,5 @@ megaContainer.addChild(spotifyPixi);
 
 export let findMeDiv = new PIXI.Container();
 megaContainer.addChild(findMeDiv);
+megaContainer.addChild(shadow);
 megaContainer.addChild(popUpProject);

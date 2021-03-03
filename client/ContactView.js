@@ -32,8 +32,14 @@ export default class Contact extends React.Component {
 			PixiApp.app.stage.pivot.x = width * 3;
 			PixiApp.app.renderer.view.width += width / 4;
 		} else {
-			this.setState({ visible: true });
-			PixiApp.app.renderer.view.width -= width / 4;
+			if (PixiApp.app.renderer.view.width >= 500) {
+				this.setState({ visible: true });
+				PixiApp.app.renderer.view.width -= width / 4;
+			} else
+				window.open(
+					'https://open.spotify.com/embed/playlist/4R4hOYnM63VAOTzfgqAR48',
+					'_blank'
+				);
 		}
 	}
 
@@ -41,14 +47,24 @@ export default class Contact extends React.Component {
 		return (
 			<div>
 				{this.state.visible ? (
-					<iframe
-						src="https://open.spotify.com/embed/playlist/4R4hOYnM63VAOTzfgqAR48"
-						width={width / 4}
-						height={height}
-						// frameborder='0'
-						allowtransparency="true"
-						allow="encrypted-media"
-					></iframe>
+					<div id="container">
+						<iframe
+							src="https://open.spotify.com/embed/playlist/4R4hOYnM63VAOTzfgqAR48"
+							width={width < 400 / 4}
+							height={height}
+							// frameborder='0'
+							allowtransparency="true"
+							allow="encrypted-media"
+						></iframe>
+						<div id="loading">
+							<div id="anim-radio">
+								<img src="/siteAssets/radio.png" />
+							</div>
+							<div>
+								<h1>Loading! Please Wait</h1>
+							</div>
+						</div>
+					</div>
 				) : (
 					<></>
 				)}

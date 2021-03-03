@@ -36,6 +36,36 @@ body {
 	display: flex;
 	flex-direction: row;
 }
+iframe {
+	z-index: 2;
+	position: absolute;
+}
+#loading {
+	background-color: #f9eee0;
+	display: flex;
+	flex-flow: column nowrap;
+	z-index: 1;
+	height: 100vh;
+	width: inherit;
+	/* position: relative; */
+	padding: 10%;
+	align-items: center;
+}
+#anim-radio {
+	padding-top: 25vh;
+	position: relative;
+	animation-name: rocking;
+	animation: rocking 2s alternate 0s infinite;
+}
+@keyframes rocking {
+	from {
+		left: 0;
+	}
+	to {
+		left: 50%;
+	}
+}
+
 @media only screen and (min-width: 600px) and (min-height: 400px) {
 	.menu {
 		top: 10px;
