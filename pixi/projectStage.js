@@ -3,7 +3,9 @@ const PIXI = require('pixi.js');
 var _ = require('lodash');
 const { data } = require('../data');
 const { Scrollbox } = require('pixi-scrollbox');
-
+let lock = {
+	scroll: false,
+};
 /** canvas configuration setup */
 window.WebFontConfig = {
 	google: {
@@ -29,7 +31,10 @@ export const app = new PIXI.Application({
 app.renderer.backgroundColor = 0xa68655;
 let pixiDiv = document.getElementById('pixi');
 pixiDiv.appendChild(app.view);
-
+if (localStorage.getItem('position')) {
+	app.stage.pivot.x = localStorage.getItem('position') * window.innerWidth;
+	localStorage.removeItem('position');
+}
 export const appWidth = window.innerWidth;
 export const appHeight = window.innerHeight;
 
@@ -40,18 +45,22 @@ let left = keyboard('ArrowLeft'),
 
 //Left arrow key `press` method
 left.press = () => {
-	if (app.stage.pivot.x >= appWidth) {
-		app.stage.pivot.x =
-			Math.floor(app.stage.pivot.x / appWidth) * appWidth - appWidth;
-	} else app.stage.pivot.x = 0;
+	if (!lock[scroll]) {
+		if (app.stage.pivot.x >= appWidth) {
+			app.stage.pivot.x =
+				Math.floor(app.stage.pivot.x / appWidth) * appWidth - appWidth;
+		} else app.stage.pivot.x = 0;
+	}
 };
 
 //Right
 right.press = () => {
-	if (app.stage.pivot.x <= appWidth * 2) {
-		app.stage.pivot.x =
-			Math.floor(app.stage.pivot.x / appWidth) * appWidth + appWidth;
-	} else app.stage.pivot.x = 3 * appWidth;
+	if (!lock[scroll]) {
+		if (app.stage.pivot.x <= appWidth * 2) {
+			app.stage.pivot.x =
+				Math.floor(app.stage.pivot.x / appWidth) * appWidth + appWidth;
+		} else app.stage.pivot.x = 3 * appWidth;
+	}
 };
 
 function keyboard(value) {
@@ -82,41 +91,30 @@ function keyboard(value) {
 	};
 
 	onwheel = (event) => {
-		if (
-			app.stage.pivot.x < 0 ||
-			app.stage.pivot.x + (event.deltaY * 1.2 || event.deltaX * 1.2) < 0
-		) {
-			app.stage.pivot.x = 0;
-		} else if (
-			app.stage.pivot.x > appWidth * 3 ||
-			app.stage.pivot.x + (event.deltaY * 1.2 || event.deltaX * 1.2) >
-				appWidth * 3
-		) {
-			app.stage.pivot.x = appWidth * 3;
-		} else app.stage.pivot.x += event.deltaY * 1.2 || event.deltaX * 1.2;
+		if (!lock[scroll]) {
+			if (
+				app.stage.pivot.x < 0 ||
+				app.stage.pivot.x + (event.deltaY * 1.2 || event.deltaX * 1.2) < 0
+			) {
+				app.stage.pivot.x = 0;
+			} else if (
+				app.stage.pivot.x > appWidth * 3 ||
+				app.stage.pivot.x + (event.deltaY * 1.2 || event.deltaX * 1.2) >
+					appWidth * 3
+			) {
+				app.stage.pivot.x = appWidth * 3;
+			} else app.stage.pivot.x += event.deltaY * 1.2 || event.deltaX * 1.2;
+		}
 	};
 	/* resize - web resposive */
 	window.addEventListener('resize', resize);
 	function resize() {
-		let widthDiff = window.innerWidth - app.renderer.view.width;
-		let heightDiff = window.innerHeight - app.renderer.view.height;
-		let method = 'add';
-		if (window.innerWidth < app.renderer.view.width) {
-			method = 'subtract';
-			widthDiff = app.renderer.view.width - window.innerWidth;
-			heightDiff = app.renderer.view.height - window.innerHeight;
-		}
-		app.renderer.resize(window.innerWidth, window.innerHeight);
-		app.stage.children.forEach((child, idx) => {
-			if (method === 'add') {
-				child.width += widthDiff;
-				child.height += heightDiff;
-			} else {
-				child.width -= widthDiff;
-				child.height -= heightDiff;
-			}
-		});
 		popUpProject.removeChildren();
+		localStorage.setItem(
+			'position',
+			Math.floor(app.stage.pivot.x / window.innerWidth)
+		);
+		window.location.reload();
 	}
 
 	//Attach event listeners
@@ -171,7 +169,7 @@ if (appHeight < 400) {
 	scale.shelf = scale.decor = scale.table = 0.5;
 	scale.guestbook = 0.35;
 	scale.board = scale.card = scale.snake = scale.monstera = 0.4;
-	scale.book = 0.6;
+	scale.book = scale.stack = 0.6;
 	scale.radio = 0.8;
 	scale.keys = scale.windows = scale.coffee = 0.3;
 	scale.maranta = scale.palms = 0.25;
@@ -179,31 +177,30 @@ if (appHeight < 400) {
 	scale.project = scale.maranta = 0.25;
 	scale.plant = 0.2;
 	scale.desk = 0.45;
-	scale.shelf = scale.board = scale.guestbook = 0.5;
-	scale.book = 0.6;
-	scale.decor = 0.5;
+	scale.shelf = scale.board = scale.guestbook = scale.decor = 0.5;
+	scale.book = scale.stack = 0.6;
 	scale.table = 0.7;
 	scale.radio = 0.8;
 	scale.keys = scale.coffee = scale.palms = 0.3;
 	scale.windows = scale.card = scale.snake = scale.monstera = 0.4;
 } else if (appWidth < 400) {
-	scale.project = scale.plant = scale.maranta = 0.3;
+	scale.project = scale.plant = scale.maranta = scale.coffee = 0.3;
 	scale.desk = 0.55;
 	scale.shelf = scale.board = scale.guestbook = 0.5;
-	scale.book = 0.7;
+	scale.book = scale.stack = 0.7;
 	scale.decor = 0.6;
 	scale.table = 0.8;
 	scale.radio = 0.9;
 	scale.windows = scale.snake = scale.monstera = 0.48;
 	scale.card = 0.45;
-	scale.keys = scale.coffee = 0.4;
+	scale.keys = 0.4;
 } else if (appWidth < 500) {
 	scale.project = scale.maranta = 0.35;
 	scale.card = 0.5;
 	scale.plant = 0.34;
 	scale.desk = 0.75;
 	scale.guestbook = 0.7;
-	scale.book = 0.8;
+	scale.book = scale.stack = 0.8;
 	scale.shelf = scale.decor = 0.6;
 	scale.table = scale.radio = 0.9;
 	scale.keys = scale.coffee = 0.4;
@@ -361,26 +358,22 @@ function createPopUpRect(title, num) {
 	let y = window.outerHeight / 4;
 	let width = window.outerWidth / 2;
 	let height = window.outerHeight / 2;
-	console.log(outerWidth, outerHeight, innerWidth, innerHeight);
-	if (window.outerWidth < 500) {
+
+	if (window.outerWidth < 500 || window.outerHeight < 500) {
 		x = window.outerWidth * num;
 		y = window.outerHeight / 8;
 		width = window.outerWidth;
 		height = window.outerHeight * 0.75;
 	}
-	if (window.outerHeight < 500) {
-		x = window.outerWidth * num;
-		y = window.outerHeight / 6;
-		width = window.outerWidth;
-		height = window.outerHeight * 0.66;
-	}
+
 	let rect = new PIXI.Graphics();
 	rect.beginFill(0xf4f5e7).drawRoundedRect(x, y, width, height, 20).endFill();
 	rect.visible = true;
 
 	const redXTexture = PIXI.Texture.from('/siteAssets/x-mark.png');
 	const closeButton = new PIXI.Sprite(redXTexture);
-	closeButton.position.x = x + 2;
+	closeButton.anchor.set(1, 0);
+	closeButton.position.x = x + width - 2;
 	closeButton.position.y = y + 2;
 	closeButton.visible = true;
 	closeButton.interactive = true;
@@ -389,6 +382,7 @@ function createPopUpRect(title, num) {
 		app.stage.pivot.x = window.outerWidth * num;
 		popUpProject.removeChildren();
 		popUpProject.visible = true;
+		lock[scroll] = false;
 	});
 	popUpProject.addChild(rect);
 	popUpProject.addChild(closeButton);
@@ -633,6 +627,8 @@ export function createSprite(
 		if (type !== 'radio') {
 			sprite.on('pointertap', function () {
 				app.stage.pivot.x = window.outerWidth * num;
+				lock[scroll] = true;
+
 				createPopUpRect(name, num);
 			});
 		}
