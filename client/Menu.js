@@ -18,6 +18,7 @@ export default class Menu extends React.Component {
 		this.onClickTap = this.onClickTap.bind(this);
 		this.onPointerOut = this.onPointerOut.bind(this);
 		this.onPointerOver = this.onPointerOver.bind(this);
+		this.moveView = this.moveView.bind(this);
 	}
 	componentDidMount() {}
 	onPointerOver() {
@@ -37,6 +38,17 @@ export default class Menu extends React.Component {
 			this.setState({ menu: 'closed', visible: true });
 		}
 	}
+	moveView(num) {
+		{
+			PixiApp.shadow.visible = false;
+			PixiApp.popUpProject.removeChildren();
+			PixiApp.popUpProject.visible = false;
+			PixiApp.app.stage.pivot.x = PixiApp.app.renderer.view.width * num;
+			this.onClickTap();
+			PixiApp.helpButton.position.x =
+				PixiApp.app.stage.pivot.x + PixiApp.app.renderer.view.width - 35;
+		}
+	}
 
 	render() {
 		return (
@@ -50,54 +62,10 @@ export default class Menu extends React.Component {
 				/>
 				{this.state.visible ? (
 					<div className="menu">
-						<h1
-							onClick={() => {
-								PixiApp.app.stage.pivot.x = 0;
-								this.onClickTap();
-								PixiApp.helpButton.position.x =
-									PixiApp.app.stage.pivot.x +
-									PixiApp.app.renderer.view.width -
-									35;
-							}}
-						>
-							Home
-						</h1>
-						<h1
-							onClick={() => {
-								PixiApp.app.stage.pivot.x = PixiApp.app.renderer.view.width;
-								this.onClickTap();
-								PixiApp.helpButton.position.x =
-									PixiApp.app.stage.pivot.x +
-									PixiApp.app.renderer.view.width -
-									35;
-							}}
-						>
-							Projects
-						</h1>
-						<h1
-							onClick={() => {
-								PixiApp.app.stage.pivot.x = PixiApp.app.renderer.view.width * 2;
-								this.onClickTap();
-								PixiApp.helpButton.position.x =
-									PixiApp.app.stage.pivot.x +
-									PixiApp.app.renderer.view.width -
-									35;
-							}}
-						>
-							About Me
-						</h1>
-						<h1
-							onClick={() => {
-								PixiApp.app.stage.pivot.x = PixiApp.app.renderer.view.width * 3;
-								this.onClickTap();
-								PixiApp.helpButton.position.x =
-									PixiApp.app.stage.pivot.x +
-									PixiApp.app.renderer.view.width -
-									35;
-							}}
-						>
-							Contact
-						</h1>
+						<h1 onClick={() => this.moveView(0)}>Home</h1>
+						<h1 onClick={() => this.moveView(1)}>Projects</h1>
+						<h1 onClick={() => this.moveView(2)}>About Me</h1>
+						<h1 onClick={() => this.moveView(3)}>Contact</h1>
 					</div>
 				) : (
 					<></>

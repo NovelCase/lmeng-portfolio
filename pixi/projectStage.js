@@ -3,7 +3,7 @@ const PIXI = require('pixi.js');
 var _ = require('lodash');
 const { data } = require('../data');
 const { Scrollbox } = require('pixi-scrollbox');
-let lock = {
+export let lock = {
 	scroll: false,
 };
 /** canvas configuration setup */
@@ -323,7 +323,7 @@ floor
 	])
 	.endFill();
 bgContainer.addChild(floor);
-let shadow = new PIXI.Graphics();
+export let shadow = new PIXI.Graphics();
 shadow
 	.beginFill(0x000000, 0.7)
 	.drawRect(0, 0, appWidth * 4, appHeight * 4)
@@ -337,7 +337,7 @@ if (localStorage.getItem('position')) {
 // popup logic
 
 let scrollbox;
-let popUpProject = new PIXI.Container();
+export let popUpProject = new PIXI.Container();
 
 function createPopUpRect(title, num) {
 	/* Styling */
@@ -369,13 +369,15 @@ function createPopUpRect(title, num) {
 		fill: '#007EC7',
 	};
 	popUpProject.removeChildren();
-	let x = window.outerWidth * num + app.renderer.view.width / 4;
+	let x =
+		(num === null ? app.stage.pivot.x : window.outerWidth * num) +
+		app.renderer.view.width / 4;
 	let y = window.outerHeight / 4;
 	let width = window.outerWidth / 2;
 	let height = window.outerHeight / 2;
 
 	if (window.outerWidth < 500 || window.outerHeight < 500) {
-		x = window.outerWidth * num;
+		x = num === null ? app.stage.pivot.x : window.outerWidth * num;
 		y = window.outerHeight / 8;
 		width = window.outerWidth;
 		height = window.outerHeight * 0.75;
@@ -394,9 +396,10 @@ function createPopUpRect(title, num) {
 	closeButton.interactive = true;
 	closeButton.buttonMode = true;
 	closeButton.on('pointertap', function () {
-		app.stage.pivot.x = window.outerWidth * num;
+		if (num !== null) app.stage.pivot.x = window.outerWidth * num;
+		helpButton.position.x = app.stage.pivot.x + app.renderer.view.width - 35;
 		popUpProject.removeChildren();
-		popUpProject.visible = true;
+		popUpProject.visible = false;
 		lock[scroll] = false;
 		shadow.visible = false;
 	});
@@ -472,6 +475,7 @@ function createPopUpRect(title, num) {
 			popLinkTwo.on('pointertap', () => openLink(title, 'Two'));
 		}
 	}
+	popUpProject.visible = true;
 	return popUpProject;
 }
 
@@ -654,7 +658,11 @@ export function createSprite(
 				sprite.on('pointertap', name);
 			} else
 				sprite.on('pointertap', function () {
-					app.stage.pivot.x = window.outerWidth * num;
+					if (num !== null) {
+						app.stage.pivot.x = window.outerWidth * num;
+						helpButton.position.x =
+							app.stage.pivot.x + app.renderer.view.width - 35;
+					}
 					lock[scroll] = true;
 					shadow.visible = true;
 					createPopUpRect(name, num);
@@ -734,7 +742,7 @@ export let helpButton = createSprite(
 	'stack',
 	1,
 	'navDesk',
-	0,
+	null,
 	helpRollTexture
 );
 
