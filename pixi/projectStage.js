@@ -339,35 +339,39 @@ if (localStorage.getItem('position')) {
 let scrollbox;
 export let popUpProject = new PIXI.Container();
 
+let titleStyle = {
+	fontFamily: ['Montserrat', 'sans-serif'],
+	fontSize: 35,
+	fontWeight: '600',
+	wordWrap: true,
+	lineHeight: 50,
+	wordWrapWidth:
+		window.outerHeight < 500
+			? window.outerWidth * 0.8
+			: Math.max(window.outerWidth / 3, 300),
+};
+let descriptionStyle = {
+	fontFamily: ['Montserrat', 'sans-serif'],
+	fontSize: 23,
+	fontWeight: '400',
+	lineHeight: 50,
+	wordWrap: true,
+	wordWrapWidth:
+		window.outerHeight < 500
+			? window.outerWidth * 0.8
+			: Math.max(window.outerWidth / 3, 300),
+};
+let linkStyle = {
+	fontFamily: ['Montserrat', 'sans-serif'],
+	fontSize: 23,
+	fill: '#007EC7',
+};
+const redXTexture = PIXI.Texture.from('/siteAssets/x-mark.png');
+const closeButton = new PIXI.Sprite(redXTexture);
+
 function createPopUpRect(title, num) {
 	/* Styling */
-	let titleStyle = {
-		fontFamily: ['Montserrat', 'sans-serif'],
-		fontSize: 35,
-		fontWeight: '600',
-		wordWrap: true,
-		lineHeight: 50,
-		wordWrapWidth:
-			window.outerHeight < 500
-				? window.outerWidth * 0.8
-				: Math.max(window.outerWidth / 3, 300),
-	};
-	let descriptionStyle = {
-		fontFamily: ['Montserrat', 'sans-serif'],
-		fontSize: 23,
-		fontWeight: '400',
-		lineHeight: 50,
-		wordWrap: true,
-		wordWrapWidth:
-			window.outerHeight < 500
-				? window.outerWidth * 0.8
-				: Math.max(window.outerWidth / 3, 300),
-	};
-	let linkStyle = {
-		fontFamily: ['Montserrat', 'sans-serif'],
-		fontSize: 23,
-		fill: '#007EC7',
-	};
+
 	popUpProject.removeChildren();
 	let x =
 		(num === null ? app.stage.pivot.x : window.outerWidth * num) +
@@ -387,8 +391,6 @@ function createPopUpRect(title, num) {
 	rect.beginFill(0xf4f5e7).drawRoundedRect(x, y, width, height, 20).endFill();
 	rect.visible = true;
 
-	const redXTexture = PIXI.Texture.from('/siteAssets/x-mark.png');
-	const closeButton = new PIXI.Sprite(redXTexture);
 	closeButton.anchor.set(1, 0);
 	closeButton.position.x = x + width - 10;
 	closeButton.position.y = y + 10;
