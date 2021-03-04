@@ -4,7 +4,6 @@ import * as PIXI from 'pixi.js';
 // require('../secrets.js');
 
 let weatherWindow, sideWeatherWindow;
-
 export default class Welcome extends React.Component {
 	constructor(props) {
 		super(props);
