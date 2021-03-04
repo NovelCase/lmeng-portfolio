@@ -676,7 +676,7 @@ export function createSprite(
 		sprite.on('resize', () => {
 			sprite.scale.set(scale[`${type}`]);
 		});
-		if (type !== 'radio' && type !== 'keys') {
+		if (type !== 'radio' && type !== 'keys' && type !== 'guestbook') {
 			if (typeof name === 'function') {
 				sprite.on('pointertap', name);
 			} else
