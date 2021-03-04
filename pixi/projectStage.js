@@ -106,7 +106,7 @@ function keyboard(value) {
 			helpButton.position.x = app.stage.pivot.x + appWidth - 35;
 		}
 	};
-	ontouchmove = (event) => {
+	function ontouchmove(event) {
 		event.preventDefault();
 		if (!lock[scroll]) {
 			if (
@@ -123,7 +123,7 @@ function keyboard(value) {
 			} else app.stage.pivot.x += window.pageXOffset || window.pageYOffset;
 			helpButton.position.x = app.stage.pivot.x + appWidth - 35;
 		}
-	};
+	}
 	/* resize - web resposive */
 	window.addEventListener('resize', resize);
 	function resize() {
