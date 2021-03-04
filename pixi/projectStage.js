@@ -124,12 +124,14 @@ function keyboard(value) {
 	window.addEventListener('keydown', downListener, false);
 	window.addEventListener('keyup', upListener, false);
 	window.addEventListener('wheel', _.throttle(onwheel, 0), false);
+	window.addEventListener('scroll', _.throttle(onwheel, 0), false);
 
 	// Detach event listeners
 	key.unsubscribe = () => {
 		window.removeEventListener('keydown', downListener);
 		window.removeEventListener('keyup', upListener);
 		window.removeEventListener('wheel', _.throttle(onwheel, 0), false);
+		window.removeEventListener('scroll', _.throttle(onwheel, 0), false);
 	};
 
 	return key;
@@ -432,8 +434,7 @@ function createPopUpRect(title, num) {
 	);
 	if (title === 'techStack' || title === 'navDesk') {
 		if (
-			window.outerWidth < 700 &&
-			window.outerHeight < 700 &&
+			(window.outerWidth < 600 || window.outerHeight < 600) &&
 			title === 'navDesk'
 		)
 			title = 'navMobile';
