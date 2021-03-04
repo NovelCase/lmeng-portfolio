@@ -92,6 +92,7 @@ export let data = {
 	},
 	navMobile: {
 		name: 'Navigation',
-		description: '/siteAssets/instructionsmobile.png',
+		description:
+			'You can navigate using the menu, but for the best experience, please switch to desktop! Thank you!',
 	},
 };

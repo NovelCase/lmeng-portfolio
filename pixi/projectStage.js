@@ -450,12 +450,14 @@ function createPopUpRect(title, num) {
 		x + rect.width / 10,
 		Math.min(popTitle.position.y + popTitle.height + 10, y + 130)
 	);
-	if (title === 'techStack' || title === 'navDesk') {
+	if (title === 'navDesk') {
 		if (
 			(window.outerWidth < 600 || window.outerHeight < 600) &&
 			title === 'navDesk'
 		)
 			title = 'navMobile';
+	}
+	if (title === 'techStack' || title === 'navDesk') {
 		let spriteBox = new PIXI.Sprite(
 			PIXI.Texture.from(`${data[title].description}`)
 		);
