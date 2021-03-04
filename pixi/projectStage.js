@@ -32,8 +32,8 @@ app.renderer.backgroundColor = 0xa68655;
 let pixiDiv = document.getElementById('pixi');
 pixiDiv.appendChild(app.view);
 
-export const appWidth = window.outerWidth;
-export const appHeight = window.outerHeight;
+export const appWidth = window.innerWidth;
+export const appHeight = window.innerHeight;
 
 // all keyboard and event-listeners
 
