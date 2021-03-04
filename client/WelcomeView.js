@@ -4,7 +4,7 @@ import * as PIXI from 'pixi.js';
 // require('../secrets.js');
 
 let weatherWindow, sideWeatherWindow;
-
+console.log(process.env.API_WEATHER, 'hi');
 export default class Welcome extends React.Component {
 	constructor(props) {
 		super(props);
