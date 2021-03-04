@@ -32,8 +32,8 @@ app.renderer.backgroundColor = 0xa68655;
 let pixiDiv = document.getElementById('pixi');
 pixiDiv.appendChild(app.view);
 
-export const appWidth = window.innerWidth;
-export const appHeight = window.innerHeight;
+export const appWidth = window.outerWidth;
+export const appHeight = window.outerHeight;
 
 // all keyboard and event-listeners
 
@@ -144,14 +144,12 @@ function keyboard(value) {
 	window.addEventListener('wheel', _.throttle(onwheel, 0), false);
 	window.addEventListener('touchmove', ontouchmove, false);
 
-
 	// Detach event listeners
 	key.unsubscribe = () => {
 		window.removeEventListener('keydown', downListener);
 		window.removeEventListener('keyup', upListener);
 		window.removeEventListener('wheel', _.throttle(onwheel, 0), false);
 		window.removeEventListener('touchmove', ontouchmove, false);
-
 	};
 
 	return key;
@@ -168,12 +166,12 @@ export let scale = {
 	book: 1,
 	shelf: 0.8,
 	coffee: 0.5,
-	table: 1.1,
+	table: 0.9,
 	radio: 1.3,
 	plant: 0.5,
 	board: 0.7,
 	palms: 0.7,
-	guestbook: 0.8,
+	guestbook: 0.6,
 	decor: 0.9,
 	keys: 0.5,
 	windows: 0.65,
@@ -197,7 +195,7 @@ if (appHeight < 400) {
 	scale.keys = scale.windows = scale.coffee = 0.3;
 	scale.maranta = scale.palms = 0.25;
 	scale.logo = scale.stack / 6;
-} else if (appHeight < 500) {
+} else if (appHeight < 600) {
 	scale.project = scale.maranta = 0.25;
 	scale.plant = 0.2;
 	scale.desk = 0.45;
@@ -220,7 +218,7 @@ if (appHeight < 400) {
 	scale.card = 0.45;
 	scale.keys = 0.4;
 	scale.logo = scale.stack / 6;
-} else if (appWidth < 500) {
+} else if (appWidth < 600) {
 	scale.project = scale.maranta = 0.35;
 	scale.card = 0.5;
 	scale.plant = 0.34;
@@ -905,7 +903,7 @@ let stagg = createSprite(
 /* socials links */
 let socialsText = PIXI.Texture.from('/siteAssets/socials-board.png');
 let chalkboard = createSprite(
-	(appWidth / 2) * 6.6,
+	(appWidth / 2) * 6.8,
 	backY + (appHeight * 3) / 24,
 	socialsText,
 	'board',
@@ -914,7 +912,7 @@ let chalkboard = createSprite(
 
 let gitText = PIXI.Texture.from('/siteAssets/github-key.png');
 let github = createSprite(
-	(appWidth / 2) * 6.6 - 165 * scale.board,
+	(appWidth / 2) * 6.8 - 165 * scale.board,
 	backY + (appHeight * 3) / 24 + 200 * scale.board,
 	gitText,
 	'keys',
@@ -927,7 +925,7 @@ github.on('pointertap', () => {
 
 let codeText = PIXI.Texture.from('/siteAssets/codepen-key.png');
 let codepen = createSprite(
-	(appWidth / 2) * 6.6 + 165 * scale.board,
+	(appWidth / 2) * 6.8 + 165 * scale.board,
 	backY + (appHeight * 3) / 24 + 200 * scale.board,
 	codeText,
 	'keys',
@@ -940,7 +938,7 @@ codepen.on('pointertap', () => {
 
 let linkText = PIXI.Texture.from('/siteAssets/linkedin-key.png');
 let linkedin = createSprite(
-	(appWidth / 2) * 6.6,
+	(appWidth / 2) * 6.8,
 	backY + (appHeight * 3) / 24 + 200 * scale.board,
 	linkText,
 	'keys',
@@ -953,7 +951,7 @@ linkedin.on('pointertap', () => {
 
 /* radio and plant */
 export let secondMonstera = createSprite(
-	(appWidth / 2) * 7.3,
+	(appWidth / 2) * 7.5,
 	(appHeight / 4) * 2.4,
 	monstera,
 	'decor'
@@ -963,15 +961,15 @@ export let secondMonstera = createSprite(
 
 let tableText = PIXI.Texture.from('/siteAssets/tableLT.png');
 let table = createSprite(
-	(appWidth / 2) * 6.2,
+	(appWidth / 2) * 6.4,
 	(appHeight / 4) * 3,
 	tableText,
 	'table'
 );
 let gbookText = PIXI.Texture.from('/siteAssets/guestbookColor.png');
 let guestbook = createSprite(
-	(appWidth / 2) * 6.2 - 60 * scale.table,
-	(appHeight / 4) * 3 - 200 * scale.table + 70 * scale.guestbook,
+	(appWidth / 2) * 6.4 - 20 * scale.table,
+	(appHeight / 4) * 3 - 180 * scale.table + 70 * scale.guestbook,
 	gbookText,
 	'guestbook'
 );

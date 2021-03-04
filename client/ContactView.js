@@ -34,7 +34,7 @@ export default class Contact extends React.Component {
 			PixiApp.helpButton.position.x =
 				PixiApp.app.stage.pivot.x + PixiApp.app.renderer.view.width - 35;
 		} else {
-			if (PixiApp.app.renderer.view.width >= 500) {
+			if (PixiApp.app.renderer.view.width >= 800) {
 				this.setState({ visible: true });
 				PixiApp.app.renderer.view.width -= width / 4;
 				PixiApp.helpButton.position.x =
