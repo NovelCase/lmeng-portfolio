@@ -1,6 +1,7 @@
 import React from 'react';
 import * as PixiApp from '../pixi/projectStage.js';
 import * as PIXI from 'pixi.js';
+// require('../secrets.js');
 
 let weatherWindow, sideWeatherWindow;
 

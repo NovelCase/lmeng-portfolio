@@ -124,14 +124,14 @@ function keyboard(value) {
 	window.addEventListener('keydown', downListener, false);
 	window.addEventListener('keyup', upListener, false);
 	window.addEventListener('wheel', _.throttle(onwheel, 0), false);
-	window.addEventListener('scroll', _.throttle(onwheel, 0), false);
+	window.addEventListener('touchmove', _.throttle(onwheel, 0), false);
 
 	// Detach event listeners
 	key.unsubscribe = () => {
 		window.removeEventListener('keydown', downListener);
 		window.removeEventListener('keyup', upListener);
 		window.removeEventListener('wheel', _.throttle(onwheel, 0), false);
-		window.removeEventListener('scroll', _.throttle(onwheel, 0), false);
+		window.removeEventListener('touchmove', _.throttle(onwheel, 0), false);
 	};
 
 	return key;
