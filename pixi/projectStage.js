@@ -106,11 +106,7 @@ function keyboard(value) {
 			helpButton.position.x = app.stage.pivot.x + appWidth - 35;
 		}
 	};
-<<<<<<< HEAD
 	ontouchmove = (event) => {
-=======
-	touchmove = (event) => {
->>>>>>> 0dfb839bff481fc1b001cfef4078b853f343f7f3
 		event.preventDefault();
 		if (!lock[scroll]) {
 			if (
@@ -146,22 +142,14 @@ function keyboard(value) {
 	window.addEventListener('keydown', downListener, false);
 	window.addEventListener('keyup', upListener, false);
 	window.addEventListener('wheel', _.throttle(onwheel, 0), false);
-<<<<<<< HEAD
 	window.addEventListener('touchmove', ontouchmove, false);
-=======
-	window.addEventListener('touchmove', touchmove, false);
->>>>>>> 0dfb839bff481fc1b001cfef4078b853f343f7f3
 
 	// Detach event listeners
 	key.unsubscribe = () => {
 		window.removeEventListener('keydown', downListener);
 		window.removeEventListener('keyup', upListener);
 		window.removeEventListener('wheel', _.throttle(onwheel, 0), false);
-<<<<<<< HEAD
 		window.removeEventListener('touchmove', ontouchmove, false);
-=======
-		window.removeEventListener('touchmove', touchmove, false);
->>>>>>> 0dfb839bff481fc1b001cfef4078b853f343f7f3
 	};
 
 	return key;
