@@ -155,7 +155,7 @@ function keyboard(value) {
 		_.throttle((event) => onwheel(event, -1), 0)
 	);
 	hammertime.on('panstart', () => (lock.click = true));
-	hammertime.on('end', () =>
+	hammertime.on('panend', () =>
 		setTimeout(function () {
 			lock.click = false;
 		}, 300)
