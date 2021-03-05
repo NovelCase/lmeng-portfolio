@@ -29,7 +29,7 @@ export default class Welcome extends React.Component {
 		try {
 			this.setState({ time: new Date() });
 			const api_call = await fetch(
-				`https://api.openweathermap.org/data/2.5/weather?q=${this.state.city}&APPID=${process.env.API_WEATHER}`
+				`https://api.openweathermap.org/data/2.5/weather?q=${this.state.city}&appid=${process.env.API_WEATHER}`
 			);
 			const data = await api_call.json();
 			this.setState({ data });
