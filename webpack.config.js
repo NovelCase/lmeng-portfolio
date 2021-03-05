@@ -45,7 +45,7 @@ module.exports = (env) => {
 		plugins: [
 			new webpack.DefinePlugin({
 				'process.env.API_WEATHER': JSON.stringify(
-					'e85282415ad04fe926b501b1b9888316'
+					'53fa23b8e69442e011ba2d017fec872b'
 				),
 			}),
 		],
