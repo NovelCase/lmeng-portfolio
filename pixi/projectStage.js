@@ -3,8 +3,10 @@ const PIXI = require('pixi.js');
 var _ = require('lodash');
 const { data } = require('../data');
 const { Scrollbox } = require('pixi-scrollbox');
+const Hammer = require('hammerjs');
 export let lock = {
 	scroll: false,
+	click: false,
 };
 /** canvas configuration setup */
 window.WebFontConfig = {
@@ -89,20 +91,25 @@ function keyboard(value) {
 		}
 	};
 
-	onwheel = (event) => {
+	onwheel = (event, direction = 1) => {
 		if (!lock[scroll]) {
 			if (
 				app.stage.pivot.x < 0 ||
-				app.stage.pivot.x + (event.deltaY * 1.2 || event.deltaX * 1.2) < 0
+				app.stage.pivot.x +
+					(event.deltaY * 1.2 || event.deltaX * 1.2) * direction <
+					0
 			) {
 				app.stage.pivot.x = 0;
 			} else if (
 				app.stage.pivot.x > appWidth * 3 ||
-				app.stage.pivot.x + (event.deltaY * 1.2 || event.deltaX * 1.2) >
+				app.stage.pivot.x +
+					(event.deltaY * 1.2 || event.deltaX * 1.2) * direction >
 					appWidth * 3
 			) {
 				app.stage.pivot.x = appWidth * 3;
-			} else app.stage.pivot.x += event.deltaY * 1.2 || event.deltaX * 1.2;
+			} else
+				app.stage.pivot.x +=
+					(event.deltaY * 1.2 || event.deltaX * 1.2) * direction;
 			helpButton.position.x = app.stage.pivot.x + appWidth - 35;
 		}
 	};
@@ -138,6 +145,21 @@ function keyboard(value) {
 	//Attach event listeners
 	const downListener = key.downHandler.bind(key);
 	const upListener = key.upHandler.bind(key);
+
+	let hammertime = new Hammer(app.view);
+	let Pan = new Hammer.Pan();
+
+	hammertime.add(Pan);
+	hammertime.on(
+		'pan',
+		_.throttle((event) => onwheel(event, -1), 0)
+	);
+	hammertime.on('panstart', () => (lock.click = true));
+	hammertime.on('end', () =>
+		setTimeout(function () {
+			lock.click = false;
+		}, 300)
+	);
 
 	window.addEventListener('keydown', downListener, false);
 	window.addEventListener('keyup', upListener, false);
@@ -421,12 +443,14 @@ function createPopUpRect(title, num) {
 	closeButton.interactive = true;
 	closeButton.buttonMode = true;
 	closeButton.on('pointertap', function () {
-		if (num !== null) app.stage.pivot.x = window.outerWidth * num;
-		helpButton.position.x = app.stage.pivot.x + app.renderer.view.width - 35;
-		popUpProject.removeChildren();
-		popUpProject.visible = false;
-		lock[scroll] = false;
-		shadow.visible = false;
+		if (!lock.click) {
+			if (num !== null) app.stage.pivot.x = window.outerWidth * num;
+			helpButton.position.x = app.stage.pivot.x + app.renderer.view.width - 35;
+			popUpProject.removeChildren();
+			popUpProject.visible = false;
+			lock[scroll] = false;
+			shadow.visible = false;
+		}
 	});
 	popUpProject.addChild(rect);
 	popUpProject.addChild(closeButton);
@@ -453,14 +477,12 @@ function createPopUpRect(title, num) {
 		x + rect.width / 10,
 		Math.min(popTitle.position.y + popTitle.height + 10, y + 130)
 	);
-	if (title === 'navDesk') {
+	if (title === 'techStack' || title === 'navDesk') {
 		if (
 			(window.outerWidth < 600 || window.outerHeight < 600) &&
 			title === 'navDesk'
 		)
 			title = 'navMobile';
-	}
-	if (title === 'techStack' || title === 'navDesk') {
 		let spriteBox = new PIXI.Sprite(
 			PIXI.Texture.from(`${data[title].description}`)
 		);
@@ -487,7 +509,9 @@ function createPopUpRect(title, num) {
 				true,
 				'projectGithub'
 			);
-			popLinkOne.on('pointertap', () => openLink(title, 'One'));
+			popLinkOne.on('pointertap', () => {
+				if (!lock.click) openLink(title, 'One');
+			});
 		}
 		if (data[title].linkTwo) {
 			let popLinkTwo = createText(
@@ -498,7 +522,9 @@ function createPopUpRect(title, num) {
 				true,
 				'projectLive'
 			);
-			popLinkTwo.on('pointertap', () => openLink(title, 'Two'));
+			popLinkTwo.on('pointertap', () => {
+				if (!lock.click) openLink(title, 'Two');
+			});
 		}
 	}
 	popUpProject.visible = true;
@@ -681,17 +707,23 @@ export function createSprite(
 		});
 		if (type !== 'radio' && type !== 'keys' && type !== 'guestbook') {
 			if (typeof name === 'function') {
-				sprite.on('pointertap', name);
+				sprite.on('pointertap', () => {
+					if (!lock.click) {
+						name;
+					}
+				});
 			} else
 				sprite.on('pointertap', function () {
-					if (num !== null) {
-						app.stage.pivot.x = window.outerWidth * num;
-						helpButton.position.x =
-							app.stage.pivot.x + app.renderer.view.width - 35;
+					if (!lock.click) {
+						if (num !== null) {
+							app.stage.pivot.x = window.outerWidth * num;
+							helpButton.position.x =
+								app.stage.pivot.x + app.renderer.view.width - 35;
+						}
+						lock[scroll] = true;
+						shadow.visible = true;
+						createPopUpRect(name, num);
 					}
-					lock[scroll] = true;
-					shadow.visible = true;
-					createPopUpRect(name, num);
 				});
 		}
 	} else {
@@ -774,7 +806,13 @@ export let helpButton = createSprite(
 
 const resFunc = () => {
 	let openRes = confirm('Open resume in new window?');
-	if (openRes) window.open('https://leslie-meng.github.io/Resume/', '_blank');
+	if (openRes)
+		window.open(
+			'https://leslie-meng.github.io/Resume/',
+			'_blank',
+			'noopener',
+			'noreferrer'
+		);
 	app.stage.pivot.x = appWidth;
 };
 let resume = createSprite(
@@ -924,8 +962,15 @@ let github = createSprite(
 	0
 );
 github.on('pointertap', () => {
-	window.open('https://github.com/leslie-meng', '_blank');
-	app.stage.pivot.x = 3 * appWidth;
+	if (!lock.click) {
+		window.open(
+			'https://github.com/leslie-meng',
+			'_blank',
+			'noopener',
+			'noreferrer'
+		);
+		app.stage.pivot.x = 3 * appWidth;
+	}
 });
 
 let codeText = PIXI.Texture.from('/siteAssets/codepen-key.png');
@@ -937,8 +982,15 @@ let codepen = createSprite(
 	0
 );
 codepen.on('pointertap', () => {
-	window.open('https://codepen.io/leslie-meng', '_blank');
-	app.stage.pivot.x = 3 * appWidth;
+	if (!lock.click) {
+		window.open(
+			'https://codepen.io/leslie-meng',
+			'_blank',
+			'noopener',
+			'noreferrer'
+		);
+		app.stage.pivot.x = 3 * appWidth;
+	}
 });
 
 let linkText = PIXI.Texture.from('/siteAssets/linkedin-key.png');
@@ -950,8 +1002,15 @@ let linkedin = createSprite(
 	0
 );
 linkedin.on('pointertap', () => {
-	window.open('https://www.linkedin.com/in/leslie-meng/', '_blank');
-	app.stage.pivot.x = 3 * appWidth;
+	if (!lock.click) {
+		window.open(
+			'https://www.linkedin.com/in/leslie-meng/',
+			'_blank',
+			'noopener',
+			'noreferrer'
+		);
+		app.stage.pivot.x = 3 * appWidth;
+	}
 });
 
 /* radio and plant */
@@ -979,9 +1038,11 @@ let guestbook = createSprite(
 	'guestbook'
 );
 guestbook.on('pointertap', () => {
-	window.location.href =
-		'mailto:m.leslie.meng@gmail.com?subject=Just visited your website!';
-	app.stage.pivot.x = 3 * appWidth;
+	if (!lock.click) {
+		window.location.href =
+			'mailto:m.leslie.meng@gmail.com?subject=Just visited your website!';
+		app.stage.pivot.x = 3 * appWidth;
+	}
 });
 app.ticker.add((delta) => {});
 
