@@ -17,6 +17,7 @@
 	"author": "Novel Case",
 	"license": "ISC",
 	"dependencies": {
+		"babel-plugin-polyfill-regenerator": "^0.1.6",
 		"babel-preset-es2016": "^6.24.1",
 		"body-parser": "^1.19.0",
 		"css-loader": "^4.3.0",
@@ -44,6 +45,8 @@
 		"@babel/preset-react": "^7.10.4",
 		"babel-core": "^6.26.3",
 		"babel-loader": "^8.2.2",
+		"babel-plugin-polyfill-corejs2": "^0.1.10",
+		"babel-plugin-polyfill-corejs3": "^0.1.7",
 		"babel-polyfill": "^6.26.0",
 		"babel-preset-es2015": "^6.24.1",
 		"babel-preset-stage-0": "^6.24.1",
