@@ -91,25 +91,25 @@ function keyboard(value) {
 		}
 	};
 
-	onwheel = (event, direction = 1) => {
+	onwheel = (event, direction = 1, mod = 1.2) => {
 		if (!lock[scroll]) {
 			if (
 				app.stage.pivot.x < 0 ||
 				app.stage.pivot.x +
-					(event.deltaY * 1.2 || event.deltaX * 1.2) * direction <
+					(event.deltaY * mod || event.deltaX * mod) * direction <
 					0
 			) {
 				app.stage.pivot.x = 0;
 			} else if (
 				app.stage.pivot.x > appWidth * 3 ||
 				app.stage.pivot.x +
-					(event.deltaY * 1.2 || event.deltaX * 1.2) * direction >
+					(event.deltaY * mod || event.deltaX * mod) * direction >
 					appWidth * 3
 			) {
 				app.stage.pivot.x = appWidth * 3;
 			} else
 				app.stage.pivot.x +=
-					(event.deltaY * 1.2 || event.deltaX * 1.2) * direction;
+					(event.deltaY * mod || event.deltaX * mod) * direction;
 			helpButton.position.x = app.stage.pivot.x + appWidth - 35;
 		}
 	};
@@ -152,7 +152,7 @@ function keyboard(value) {
 	hammertime.add(Pan);
 	hammertime.on(
 		'pan',
-		_.throttle((event) => onwheel(event, -1), 0)
+		_.throttle((event) => onwheel(event, -1, 0.25), 0)
 	);
 	hammertime.on('panstart', () => (lock.click = true));
 	hammertime.on('panend', () =>
@@ -166,7 +166,6 @@ function keyboard(value) {
 	// window.addEventListener('wheel', _.throttle(onwheel, 0), false);
 	window.addEventListener('touchmove', ontouchmove, false);
 	window.addEventListener('scroll', _.throttle(onwheel), false);
-
 
 	// Detach event listeners
 	key.unsubscribe = () => {

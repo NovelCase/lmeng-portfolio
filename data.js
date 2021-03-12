@@ -84,7 +84,7 @@ export let data = {
 		linkOne: 'Github',
 		linkOneUrl: 'https://github.com/NovelCase',
 		linkTwo: 'Live Site',
-		linkTwoUrl: 'https://github.com/NovelCase',
+		linkTwoUrl: 'https://novelcase.netlify.app/',
 	},
 	navDesk: {
 		name: 'Navigation',
