@@ -804,8 +804,7 @@ export let helpButton = createSprite(
 );
 
 const resFunc = () => {
-	let openRes = confirm('Open resume in new window?');
-	if (openRes)
+	
 		window.open(
 			'https://leslie-meng.github.io/Resume/',
 			'_blank',
