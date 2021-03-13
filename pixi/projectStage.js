@@ -708,7 +708,7 @@ export function createSprite(
 			if (typeof name === 'function') {
 				sprite.on('pointertap', () => {
 					if (!lock.click) {
-						name;
+						name();
 					}
 				});
 			} else
@@ -804,13 +804,12 @@ export let helpButton = createSprite(
 );
 
 const resFunc = () => {
-	
-		window.open(
-			'https://leslie-meng.github.io/Resume/',
-			'_blank',
-			'noopener',
-			'noreferrer'
-		);
+	window.open(
+		'https://leslie-meng.github.io/Resume/',
+		'_blank',
+		'noopener',
+		'noreferrer'
+	);
 	app.stage.pivot.x = appWidth;
 };
 let resume = createSprite(
