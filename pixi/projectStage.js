@@ -706,11 +706,7 @@ export function createSprite(
 		});
 		if (type !== 'radio' && type !== 'keys' && type !== 'guestbook') {
 			if (typeof name === 'function') {
-				sprite.on('pointertap', () => {
-					if (!lock.click) {
-						name();
-					}
-				});
+				sprite.on('pointertap', () => name);
 			} else
 				sprite.on('pointertap', function () {
 					if (!lock.click) {
@@ -804,13 +800,17 @@ export let helpButton = createSprite(
 );
 
 const resFunc = () => {
-	window.open(
-		'https://leslie-meng.github.io/Resume/',
-		'_blank',
-		'noopener',
-		'noreferrer'
-	);
-	app.stage.pivot.x = appWidth;
+	if(!lock[click){
+		let openRes = confirm('Open resume in new window?');
+		if (openRes)
+			window.open(
+				'https://leslie-meng.github.io/Resume/',
+				'_blank',
+				'noopener',
+				'noreferrer'
+			);
+		app.stage.pivot.x = appWidth;
+	 }
 };
 let resume = createSprite(
 	(appWidth / 2) * 3 - 180 * scale.desk,
