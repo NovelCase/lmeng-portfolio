@@ -801,6 +801,8 @@ export let helpButton = createSprite(
 
 const resFunc = () => {
 	if(!lock[click){
+		app.stage.pivot.x = appWidth;
+		helpButton.position.x = app.stage.pivot.x + appWidth - 35;
 		let openRes = confirm('Open resume in new window?');
 		if (openRes)
 			window.open(
@@ -809,8 +811,6 @@ const resFunc = () => {
 				'noopener',
 				'noreferrer'
 			);
-		app.stage.pivot.x = appWidth;
-		helpButton.position.x = app.stage.pivot.x + appWidth - 35;
 	 }
 };
 let resume = createSprite(
@@ -961,14 +961,15 @@ let github = createSprite(
 );
 github.on('pointertap', () => {
 	if (!lock.click) {
+		app.stage.pivot.x = 3 * appWidth;
+		helpButton.position.x = app.stage.pivot.x + appWidth - 35;
 		window.open(
 			'https://github.com/leslie-meng',
 			'_blank',
 			'noopener',
 			'noreferrer'
 		);
-		app.stage.pivot.x = 3 * appWidth;
-		helpButton.position.x = app.stage.pivot.x + appWidth - 35;
+		
 	}
 });
 
@@ -982,14 +983,15 @@ let codepen = createSprite(
 );
 codepen.on('pointertap', () => {
 	if (!lock.click) {
+		app.stage.pivot.x = 3 * appWidth;
+		helpButton.position.x = app.stage.pivot.x + appWidth - 35;
 		window.open(
 			'https://codepen.io/leslie-meng',
 			'_blank',
 			'noopener',
 			'noreferrer'
 		);
-		app.stage.pivot.x = 3 * appWidth;
-		helpButton.position.x = app.stage.pivot.x + appWidth - 35;
+		
 	}
 });
 
@@ -1003,14 +1005,15 @@ let linkedin = createSprite(
 );
 linkedin.on('pointertap', () => {
 	if (!lock.click) {
+		app.stage.pivot.x = 3 * appWidth;
+		helpButton.position.x = app.stage.pivot.x + appWidth - 35;
 		window.open(
 			'https://www.linkedin.com/in/leslie-meng/',
 			'_blank',
 			'noopener',
 			'noreferrer'
 		);
-		app.stage.pivot.x = 3 * appWidth;
-		helpButton.position.x = app.stage.pivot.x + appWidth - 35;
+		
 	}
 });
 
@@ -1040,10 +1043,11 @@ let guestbook = createSprite(
 );
 guestbook.on('pointertap', () => {
 	if (!lock.click) {
-		window.location.href =
-			'mailto:m.leslie.meng@gmail.com?subject=Just visited your website!';
 		app.stage.pivot.x = 3 * appWidth;
 		helpButton.position.x = app.stage.pivot.x + appWidth - 35;
+		window.location.href =
+			'mailto:m.leslie.meng@gmail.com?subject=Just visited your website!';
+		
 	}
 });
 app.ticker.add((delta) => {});
