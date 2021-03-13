@@ -810,6 +810,7 @@ const resFunc = () => {
 				'noreferrer'
 			);
 		app.stage.pivot.x = appWidth;
+		helpButton.position.x = app.stage.pivot.x + appWidth - 35;
 	 }
 };
 let resume = createSprite(
@@ -967,6 +968,7 @@ github.on('pointertap', () => {
 			'noreferrer'
 		);
 		app.stage.pivot.x = 3 * appWidth;
+		helpButton.position.x = app.stage.pivot.x + appWidth - 35;
 	}
 });
 
@@ -987,6 +989,7 @@ codepen.on('pointertap', () => {
 			'noreferrer'
 		);
 		app.stage.pivot.x = 3 * appWidth;
+		helpButton.position.x = app.stage.pivot.x + appWidth - 35;
 	}
 });
 
@@ -1007,6 +1010,7 @@ linkedin.on('pointertap', () => {
 			'noreferrer'
 		);
 		app.stage.pivot.x = 3 * appWidth;
+		helpButton.position.x = app.stage.pivot.x + appWidth - 35;
 	}
 });
 
@@ -1039,6 +1043,7 @@ guestbook.on('pointertap', () => {
 		window.location.href =
 			'mailto:m.leslie.meng@gmail.com?subject=Just visited your website!';
 		app.stage.pivot.x = 3 * appWidth;
+		helpButton.position.x = app.stage.pivot.x + appWidth - 35;
 	}
 });
 app.ticker.add((delta) => {});
