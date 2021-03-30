@@ -24,7 +24,7 @@ export let data = {
 		linkOne: 'Github',
 		linkOneUrl: 'https://github.com/grace-shopper-orgs/chai-noon',
 		linkTwo: 'Live Site',
-		linkTwoUrl: 'https://chai-noon.herokuapp.com/',
+		linkTwoUrl: 'https://chainoon.herokuapp.com/',
 	},
 	plants: {
 		name: 'Plants',
